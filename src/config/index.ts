@@ -68,7 +68,7 @@ class EnvironmentVariables {
 export const validateEnvironment = () => {
   const config = plainToInstance(EnvironmentVariables, process.env, {
     enableImplicitConversion: true,
-    excludeExtraneousValues: true,
+    excludeExtraneousValues: false,
   });
 
   const errors = validateSync(config, { skipMissingProperties: false });
