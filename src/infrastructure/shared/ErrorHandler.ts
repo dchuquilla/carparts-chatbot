@@ -21,4 +21,8 @@ export class ErrorHandler {
       ErrorHandler.handle(error, res);
     };
   }
+
+  createError(code: string, message?: string): Error {
+    return new Error(message || code);
+  }
 }
