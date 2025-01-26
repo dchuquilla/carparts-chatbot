@@ -1,5 +1,7 @@
+import { Session } from '../../session/Session';
+
 export interface IState {
-  enter(session: Session): Promise<string>;
-  handleInput(input: UserInput, session: Session): Promise<StateTransition>;
-  exit(session: Session): Promise<void>;
+  handleInput(input: string, session: Session): Promise<Session>;
+  getNextState(session: Session): string;
+  getPrompt(session: Session): string;
 }
