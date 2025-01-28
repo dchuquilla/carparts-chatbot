@@ -3,7 +3,7 @@ import { Session } from '../session/Session';
 import { injectable } from 'tsyringe';
 
 @injectable()
-class CollectDataState implements IState {
+export class CollectDataState implements IState {
   async handleInput(input: string, session: Session): Promise<Session> {
     // Collect data from user
     session.transitionTo('SEARCH');
