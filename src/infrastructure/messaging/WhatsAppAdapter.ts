@@ -78,6 +78,10 @@ export class WhatsAppAdapter {
 
   // Generic message sender
   private async sendMessage(message: OutgoingMessage): Promise<void> {
+    if (!message.userId || !message.type || !message.content) {
+      throw new Error('Invalid message object');
+    }
+
     try {
       await axios.post(`${this.baseUrl}/messages`, {
         messaging_product: 'whatsapp',
