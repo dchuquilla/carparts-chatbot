@@ -1,4 +1,4 @@
-import { container } from 'tsyringe';
+import { container, injectable } from 'tsyringe';
 import { IState } from './interfaces/IState';
 import { GreetingState } from './GreetingState';
 import { ParseRequestState } from './ParseRequestState';
@@ -11,6 +11,7 @@ type StateDependencies = {
   searchService: any; // Replace with actual SearchService type
 };
 
+@injectable()
 export class StateFactory {
   private readonly states: Record<string, new () => IState> = {
     GREETING: GreetingState,
