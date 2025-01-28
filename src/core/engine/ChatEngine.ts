@@ -1,12 +1,12 @@
 import logger from "../../infrastructure/shared/logger";
-import { injectable } from 'tsyringe';
+import { injectable, inject } from 'tsyringe';
 import { ISessionRepository } from "../session/interfaces/ISessionRepository";
 import { StateFactory } from "../states/StateFactory";
 
 @injectable()
 export class ChatEngine {
   constructor(
-    private stateFactory: StateFactory,
+    @inject('stateFactory') private stateFactory: StateFactory,
     private sessionRepo: ISessionRepository
   ) {}
 

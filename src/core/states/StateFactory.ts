@@ -1,4 +1,4 @@
-import { container, injectable } from 'tsyringe';
+import { container, injectable, inject } from 'tsyringe';
 import { IState } from './interfaces/IState';
 import { GreetingState } from './GreetingState';
 import { ParseRequestState } from './ParseRequestState';
@@ -21,7 +21,7 @@ export class StateFactory {
     CONFIRMATION: ConfirmationState
   };
 
-  constructor(private dependencies: StateDependencies) {}
+  constructor( @inject('stateDependencies') private StateDependencies: StateDependencies ) { }
 
   create(stateName: string): IState {
     const StateClass = this.states[stateName];

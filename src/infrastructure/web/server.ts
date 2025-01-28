@@ -1,11 +1,12 @@
 import "reflect-metadata"; // This must be at the top
 import express from 'express';
 import { container } from 'tsyringe';
-import "reflect-metadata"
 import config from '../../config';
 import logger from '../shared/logger';
 import { RedisSessionRepository } from '../../data/repositories/RedisSessionRepository';
 import { ErrorHandler } from '../shared/ErrorHandler';
+import { StateFactory } from "../../core/states/StateFactory";
+import { ChatEngine } from "../../core/engine/ChatEngine";
 
 export async function createServer() {
   const app = express();
@@ -42,6 +43,9 @@ export async function createServer() {
   container.register('ISessionRepository', {
     useValue: redisClient,
   });
+
+  container.register('stateFactory', { useClass: StateFactory });
+  container.register('chatEngine', { useClass: ChatEngine });
 
   // ======================
   //  Route Registration
