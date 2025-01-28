@@ -1,7 +1,6 @@
 import { Redis } from 'ioredis';
 import { ISessionRepository } from '../../core/session/interfaces/ISessionRepository';
 import { Session } from '../../core/session/Session';
-import config from '../../config';
 import logger from '../../infrastructure/shared/logger';
 
 interface RedisConnectionOptions {
