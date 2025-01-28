@@ -76,7 +76,6 @@ export const validateEnvironment = () => {
     'DEEPSEEK_API_KEY',
     'REDIS_HOST',
     'REDIS_PORT',
-    'REDIS_PASSWORD',
     'NODE_ENV'
   ];
 
