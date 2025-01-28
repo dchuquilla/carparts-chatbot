@@ -1,10 +1,10 @@
 import { container } from 'tsyringe';
 import { IState } from './interfaces/IState';
 import { GreetingState } from './GreetingState';
-// import { ParseRequestState } from './ParseRequestState';
-// import { CollectDataState } from './CollectDataState';
-// import { SearchState } from './SearchState';
-// import { ConfirmationState } from './ConfirmationState';
+import { ParseRequestState } from './ParseRequestState';
+import { CollectDataState } from './CollectDataState';
+import { SearchState } from './SearchState';
+import { ConfirmationState } from './ConfirmationState';
 
 type StateDependencies = {
   messageParser: any; // Replace with actual MessageParser type
@@ -14,10 +14,10 @@ type StateDependencies = {
 export class StateFactory {
   private readonly states: Record<string, new () => IState> = {
     GREETING: GreetingState,
-    // PARSE_REQUEST: ParseRequestState,
-    // COLLECT_DATA: CollectDataState,
-    // SEARCH: SearchState,
-    // CONFIRMATION: ConfirmationState
+    PARSE_REQUEST: ParseRequestState,
+    COLLECT_DATA: CollectDataState,
+    SEARCH: SearchState,
+    CONFIRMATION: ConfirmationState
   };
 
   constructor(private dependencies: StateDependencies) {}
