@@ -43,6 +43,12 @@ export async function createServer() {
   container.register('ISessionRepository', {
     useValue: redisClient,
   });
+  container.register('stateDependencies', {
+    useValue: {
+      messageParser: {},
+      searchService: {},
+    },
+  });
 
   container.register('stateFactory', { useClass: StateFactory });
   container.register('chatEngine', { useClass: ChatEngine });

@@ -7,7 +7,7 @@ import { StateFactory } from "../states/StateFactory";
 export class ChatEngine {
   constructor(
     @inject('stateFactory') private stateFactory: StateFactory,
-    private sessionRepo: ISessionRepository
+    @inject('ISessionRepository') private sessionRepo: ISessionRepository
   ) {}
 
   async processMessage(userId: string, message: string): Promise<void> {
