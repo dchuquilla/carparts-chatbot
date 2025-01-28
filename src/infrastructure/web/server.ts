@@ -35,6 +35,7 @@ export async function createServer() {
     host: config.redis.host,
     port: config.redis.port,
     password: config.redis.password,
+    tls: config.app.isProduction ? true : undefined,
   });
 
   container.register('ISessionRepository', {
