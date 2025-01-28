@@ -66,6 +66,22 @@ class EnvironmentVariables {
 }
 
 export const validateEnvironment = () => {
+  const requiredVars = [
+    'DB_HOST',
+    'DB_USERNAME',
+    'DB_PASSWORD',
+    'WHATSAPP_API_KEY',
+    'WHATSAPP_PHONE_NUMBER_ID',
+    'WHATSAPP_BUSINESS_ACCOUNT_ID',
+    'DEEPSEEK_API_KEY',
+  ];
+
+  const missingVars = requiredVars.filter((varName) => !process.env[varName]);
+
+  if (missingVars.length > 0) {
+    throw new Error(`Missing required environment variables: ${missingVars.join(', ')}`);
+  }
+
   const config = plainToInstance(EnvironmentVariables, process.env, {
     enableImplicitConversion: true,
     excludeExtraneousValues: false,
