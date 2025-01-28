@@ -33,6 +33,10 @@ router.get('/webhook/whatsapp', (req, res) => {
 // Message processing endpoint
 router.post('/webhook/whatsapp', async (req, res) => {
   try {
+    if (!req.body || !req.body.entry) {
+      return res.status(400).send('Invalid request body');
+    }
+
     if (config.app.isProduction) {
       const isValid = whatsAppAdapter.verifySignature(req);
       if (!isValid) return res.status(401).send('Invalid signature');
