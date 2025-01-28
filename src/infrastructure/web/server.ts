@@ -1,6 +1,7 @@
-import "reflect-metadata"
+import "reflect-metadata"; // This must be at the top
 import express from 'express';
 import { container } from 'tsyringe';
+import "reflect-metadata"
 import config from '../../config';
 import logger from '../shared/logger';
 import { RedisSessionRepository } from '../../data/repositories/RedisSessionRepository';
