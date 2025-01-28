@@ -1,7 +1,6 @@
 import { IState } from './interfaces/IState';
 import { Session } from '../session/Session';
 import { injectable } from 'tsyringe';
-import { StateTransition } from '../engine/StateTransition';
 
 @injectable()
 export class GreetingState implements IState {
