@@ -1,0 +1,4 @@
+name = "carparts-chatbot-worker"
+main = "dist/worker.js"
+compatibility_date = "2023-03-15"
+workers_dev = true
