@@ -130,8 +130,7 @@ export default {
     host: config.REDIS_HOST,
     port: config.REDIS_PORT,
     password: config.REDIS_PASSWORD,
-    url: `redis${config.NODE_ENV === 'production' ? 's' : ''}://${config.REDIS_PASSWORD ? `:${config.REDIS_PASSWORD}@` : ''}${config.REDIS_HOST}:${config.REDIS_PORT}`,
-    tls: config.NODE_ENV === 'production',
+    url: `redis://${config.REDIS_PASSWORD ? `:${config.REDIS_PASSWORD}@` : ''}${config.REDIS_HOST}:${config.REDIS_PORT}`,
   },
 
   // WhatsApp

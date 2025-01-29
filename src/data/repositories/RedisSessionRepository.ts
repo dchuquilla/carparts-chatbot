@@ -7,7 +7,6 @@ interface RedisConnectionOptions {
   host: string;
   port: number;
   password?: string;
-  tls?: {} | undefined;
 }
 
 export class RedisSessionRepository implements ISessionRepository {
@@ -19,7 +18,6 @@ export class RedisSessionRepository implements ISessionRepository {
       host: options.host,
       port: options.port,
       password: options.password,
-      tls: options.tls ? {} : undefined,
       retryStrategy: (times) => Math.min(times * 100, 3000),
     });
 

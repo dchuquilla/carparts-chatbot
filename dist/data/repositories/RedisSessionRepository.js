@@ -15,7 +15,6 @@ class RedisSessionRepository {
             host: options.host,
             port: options.port,
             password: options.password,
-            tls: options.tls ? {} : undefined,
             retryStrategy: (times) => Math.min(times * 100, 3000),
         });
         this.client.on('connect', () => logger_1.default.info('Connected to Redis server'));
