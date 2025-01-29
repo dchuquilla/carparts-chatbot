@@ -7,7 +7,7 @@ interface RedisConnectionOptions {
   host: string;
   port: number;
   password?: string;
-  tls?: boolean | {} | undefined;
+  tls?: {} | undefined;
 }
 
 export class RedisSessionRepository implements ISessionRepository {
@@ -26,7 +26,7 @@ export class RedisSessionRepository implements ISessionRepository {
     this.client.on('connect', () =>
       logger.info('Connected to Redis server'));
     this.client.on('error', (err) =>
-      logger.error('[RedisConnectionOptions] Redis connection error:', err));
+      logger.error('[RedisConnectionOptions] Redis connection error:', options, err));
   }
 
   async getSession(userId: string): Promise<Session> {
