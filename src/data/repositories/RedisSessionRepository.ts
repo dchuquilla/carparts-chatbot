@@ -7,7 +7,7 @@ interface RedisConnectionOptions {
   host: string;
   port: number;
   password?: string;
-  tls?: boolean;
+  tls?: boolean | {} | undefined;
 }
 
 export class RedisSessionRepository implements ISessionRepository {
