@@ -151,6 +151,9 @@ const validateEnvironment = () => {
         'WHATSAPP_PHONE_NUMBER_ID',
         'WHATSAPP_BUSINESS_ACCOUNT_ID',
         'DEEPSEEK_API_KEY',
+        'REDIS_HOST',
+        'REDIS_PORT',
+        'NODE_ENV'
     ];
     const missingVars = requiredVars.filter((varName) => !process.env[varName]);
     if (missingVars.length > 0) {
@@ -193,7 +196,8 @@ exports.default = {
         host: config.REDIS_HOST,
         port: config.REDIS_PORT,
         password: config.REDIS_PASSWORD,
-        url: `redis://${config.REDIS_PASSWORD ? `:${config.REDIS_PASSWORD}@` : ''}${config.REDIS_HOST}:${config.REDIS_PORT}`,
+        url: `redis${config.NODE_ENV === 'production' ? 's' : ''}://${config.REDIS_PASSWORD ? `:${config.REDIS_PASSWORD}@` : ''}${config.REDIS_HOST}:${config.REDIS_PORT}`,
+        tls: config.NODE_ENV === 'production',
     },
     // WhatsApp
     whatsapp: {

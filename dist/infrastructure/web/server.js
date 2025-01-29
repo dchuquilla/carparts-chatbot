@@ -71,7 +71,7 @@ async function createServer() {
         host: config_1.default.redis.host,
         port: config_1.default.redis.port,
         password: config_1.default.redis.password,
-        tls: config_1.default.app.isProduction ? true : undefined,
+        tls: config_1.default.redis.tls ? {} : undefined,
     });
     tsyringe_1.container.register('ISessionRepository', {
         useValue: redisClient,

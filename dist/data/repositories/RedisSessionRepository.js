@@ -19,7 +19,7 @@ class RedisSessionRepository {
             retryStrategy: (times) => Math.min(times * 100, 3000),
         });
         this.client.on('connect', () => logger_1.default.info('Connected to Redis server'));
-        this.client.on('error', (err) => logger_1.default.error('Redis connection error:', err));
+        this.client.on('error', (err) => logger_1.default.error('[RedisConnectionOptions] Redis connection error:', err));
     }
     async getSession(userId) {
         try {
