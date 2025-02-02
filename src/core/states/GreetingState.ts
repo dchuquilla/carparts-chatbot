@@ -1,6 +1,6 @@
+import { injectable } from 'tsyringe';
 import { IState } from './interfaces/IState';
 import { Session } from '../session/Session';
-import { injectable } from 'tsyringe';
 
 @injectable()
 export class GreetingState implements IState {
