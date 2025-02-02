@@ -36,6 +36,11 @@ router.post('/webhook/whatsapp/messages', async (req, res) => {
     if (!req.body || !req.body.messages) {
       return res.status(400).send('Invalid request body');
     }
+
+    if (req.body?.messages[0]?.from_me) {
+      return res.status(200).send('OK');
+    }
+
     console.log("body:", req.body)
 
     const message = await whatsAppAdapter.parseIncomingMessage(req.body);
