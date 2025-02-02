@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WhatsAppAdapter = void 0;
-const whapi_1 = __importDefault(require("@api/whapi"));
 const tsyringe_1 = require("tsyringe");
 const config_1 = __importDefault(require("../../config"));
 const logger_1 = __importDefault(require("../shared/logger"));
@@ -13,9 +12,6 @@ const OpenAIService_1 = require("../../services/llmsources/OpenAIService");
 const ErrorHandler_1 = require("../shared/ErrorHandler");
 const openAIService = tsyringe_1.container.resolve(OpenAIService_1.OpenAIService);
 class WhatsAppAdapter {
-    constructor() {
-        whapi_1.default.auth(config_1.default.whatsapp.apiKey);
-    }
     // Parse incoming WhatsApp webhook payload
     async parseIncomingMessage(body) {
         try {
@@ -56,11 +52,21 @@ class WhatsAppAdapter {
             throw new Error('Invalid message object');
         }
         try {
-            whapi_1.default.sendMessageText({
-                to: `${message.userId}@s.whatsapp.net`,
-                body: message.content.body,
-            })
-                .then(({ data }) => console.log(data))
+            const whapiOptions = {
+                method: 'POST',
+                headers: {
+                    accept: 'application/json',
+                    'content-type': 'application/json',
+                    authorization: `Bearer ${config_1.default.whatsapp.apiKey}`
+                },
+                body: JSON.stringify({
+                    to: `${message.userId}@s.whatsapp.net`,
+                    body: message.content.body
+                })
+            };
+            fetch('https://gate.whapi.cloud/messages/text', whapiOptions)
+                .then(res => res.json())
+                .then(res => console.log(res))
                 .catch(err => console.error(err));
         }
         catch (error) {
