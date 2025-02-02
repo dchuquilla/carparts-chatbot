@@ -31,17 +31,13 @@ router.get('/webhook/whatsapp', (req, res) => {
 });
 
 // Message processing endpoint
-router.post('/webhook/whatsapp', async (req, res) => {
+router.post('/webhook/whatsapp/messages', async (req, res) => {
   try {
-    if (!req.body || !req.body.entry) {
+    if (!req.body || !req.body.messages) {
       return res.status(400).send('Invalid request body');
     }
-
-    if (config.app.isProduction) {
-      const isValid = whatsAppAdapter.verifySignature(req);
-      if (!isValid) return res.status(401).send('Invalid signature');
-    }
     console.log("body:", req.body)
+
     const message = whatsAppAdapter.parseIncomingMessage(req.body);
     await chatEngine.processMessage(message.userId, message.content);
     res.status(200).send('OK');
