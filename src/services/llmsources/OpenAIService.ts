@@ -17,8 +17,8 @@ export class OpenAIService implements ILLMStrategy {
         model: "gpt-3.5-turbo",
         messages: [
           { role: "system", content: "Eres un experto en JSON. Por favor crea un objeto JSON siguiendo estas reglas" },
-          { role: "system", content: "ESTRUCTURA: {\"message\": \"accepted\",\"request\": { \"replacement\": \"string\", \"brand\": \"string\", \"model\": \"string\", \"year\": \"string\" }}." },
-          { role: "system", content: "SALUDO: Cuando el texto sea un saludo sin informacion de alguna solicitud, responde con {\"message\": \"greeting\"}" },
+          { role: "system", content: "ESTRUCTURA: {\"message\": \"PARSE_REQUEST\",\"request\": { \"replacement\": \"string\", \"brand\": \"string\", \"model\": \"string\", \"year\": \"string\" }}." },
+          { role: "system", content: "SALUDO: Cuando el texto sea un saludo sin informacion de alguna solicitud, responde con {\"message\": \"GREETING\"}" },
           { role: "system", content: "EXCEPTION: Cuando el texto no sea un saludo o una solicitud de repuesto, responde con {\"message\": \"not_replacement_request\"}" },
           {
           role: "user",
