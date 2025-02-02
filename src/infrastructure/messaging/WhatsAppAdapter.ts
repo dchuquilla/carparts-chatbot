@@ -90,7 +90,7 @@ export class WhatsAppAdapter {
         textTranscription = await openAIService.transcribeAudio(message.voice);
         return openAIService.parseMessage(textTranscription);;
       default:
-        return { message: 'TYPE NOT SUPPORTED' };
+        return { message: 'NO_REPLACEMENT' };
     }
   }
 }

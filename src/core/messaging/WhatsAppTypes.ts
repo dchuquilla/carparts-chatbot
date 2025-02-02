@@ -1,3 +1,5 @@
+import { StateName } from "../states/StateTypes";
+
 export enum MessageType {
   TEXT = 'text',
   AUDIO = 'audio',
@@ -49,7 +51,7 @@ export interface AudioMessage {
 }
 
 export interface RequestPayload {
-  message: string;
+  message: StateName;
   request?: {
     replacement: string;
     brand: string;
