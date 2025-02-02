@@ -11,13 +11,13 @@ export class ChatEngine {
     @inject('ISessionRepository') private sessionRepo: ISessionRepository
   ) {}
 
-  async processMessage(userId: string, message: RequestPayload): Promise<string> {
-    console.log('Processing message:', message);
+  async processMessage(userId: string, messagePayload: RequestPayload): Promise<string> {
+    console.log('Processing message:', messagePayload);
     try {
-      const session = await this.sessionRepo.getSession(userId);
+      const session = await this.sessionRepo.getSession(userId, messagePayload);
       const currentState = this.stateFactory.create(session.currentState);
 
-      const transition = await currentState.handleInput(message.message, session);
+      const transition = await currentState.handleInput(messagePayload.message, session);
 
       session.transitionTo(transition.nextState(session.currentState));
       await this.sessionRepo.updateSession(session);
