@@ -1,6 +1,7 @@
 export enum MessageType {
   TEXT = 'text',
   AUDIO = 'audio',
+  VOICE = 'voice',
   TEMPLATE = 'template',
   UNKNOWN = 'unknown'
 }
