@@ -43,12 +43,6 @@ class EnvironmentVariables {
   @IsString()
   WHATSAPP_API_KEY!: string;
 
-  @IsString()
-  WHATSAPP_PHONE_NUMBER_ID!: string;
-
-  @IsString()
-  WHATSAPP_BUSINESS_ACCOUNT_ID!: string;
-
   // DeepSeek API
   @IsString()
   DEEPSEEK_API_KEY!: string;
@@ -75,8 +69,6 @@ export const validateEnvironment = () => {
     'DB_USERNAME',
     'DB_PASSWORD',
     'WHATSAPP_API_KEY',
-    'WHATSAPP_PHONE_NUMBER_ID',
-    'WHATSAPP_BUSINESS_ACCOUNT_ID',
     'DEEPSEEK_API_KEY',
     'OPENAI_API_KEY',
     'REDIS_HOST',
@@ -141,8 +133,6 @@ export default {
   // WhatsApp
   whatsapp: {
     apiKey: config.WHATSAPP_API_KEY,
-    phoneNumberId: config.WHATSAPP_PHONE_NUMBER_ID,
-    businessAccountId: config.WHATSAPP_BUSINESS_ACCOUNT_ID,
   },
 
   // DeepSeek
