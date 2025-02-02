@@ -1,5 +1,4 @@
-import { Request } from 'express';
-import axios from 'axios';
+import whapi from '@api/whapi';
 import { container } from 'tsyringe';
 import config from '../../config';
 import logger from '../shared/logger';
@@ -10,11 +9,8 @@ import { ErrorHandler } from '../shared/ErrorHandler';
 const openAIService = container.resolve(OpenAIService);
 
 export class WhatsAppAdapter {
-  private readonly apiVersion = 'v18.0';
-  private readonly baseUrl: string;
-
   constructor() {
-    this.baseUrl = `https://graph.facebook.com/${this.apiVersion}/${config.whatsapp.phoneNumberId}`;
+    whapi.auth(config.whatsapp.apiKey);
   }
 
   // Parse incoming WhatsApp webhook payload
@@ -63,18 +59,12 @@ export class WhatsAppAdapter {
     }
 
     try {
-      await axios.post(`${this.baseUrl}/messages`, {
-        messaging_product: 'whatsapp',
-        recipient_type: 'individual',
-        to: message.userId,
-        type: message.type,
-        [message.type]: message.content
-      }, {
-        headers: {
-          Authorization: `Bearer ${config.whatsapp.apiKey}`,
-          'Content-Type': 'application/json'
-        }
-      });
+      whapi.sendMessageText({
+        to: `${message.userId}@s.whatsapp.net`,
+        body: message.content.body,
+      })
+        .then(({ data }) => console.log(data))
+        .catch(err => console.error(err));
     } catch (error) {
       logger.error('Failed to send WhatsApp message:', (error as any).response?.data || (error as any).message);
       throw new ErrorHandler().createError('MESSAGE_SEND_FAILED');

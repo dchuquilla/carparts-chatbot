@@ -11,16 +11,18 @@ export class ChatEngine {
     @inject('ISessionRepository') private sessionRepo: ISessionRepository
   ) {}
 
-  async processMessage(userId: string, message: RequestPayload): Promise<void> {
+  async processMessage(userId: string, message: RequestPayload): Promise<string> {
     console.log('Processing message:', message);
     try {
       const session = await this.sessionRepo.getSession(userId);
       const currentState = this.stateFactory.create(session.currentState);
 
-      const transition = await currentState.handleInput(message, session);
+      const transition = await currentState.handleInput(message.message, session);
 
       session.transitionTo(transition.nextState(session.currentState));
       await this.sessionRepo.updateSession(session);
+
+      return currentState.getPrompt(session);
 
     } catch (error) {
       logger.error(`Failed to process message for user ${userId}:`, error);
