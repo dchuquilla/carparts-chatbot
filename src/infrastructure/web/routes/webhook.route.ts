@@ -38,7 +38,7 @@ router.post('/webhook/whatsapp/messages', async (req, res) => {
     }
     console.log("body:", req.body)
 
-    const message = whatsAppAdapter.parseIncomingMessage(req.body);
+    const message = await whatsAppAdapter.parseIncomingMessage(req.body);
     await chatEngine.processMessage(message.userId, message.content);
     res.status(200).send('OK');
   } catch (error) {
