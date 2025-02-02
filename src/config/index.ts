@@ -56,6 +56,10 @@ class EnvironmentVariables {
   @IsString()
   DEEPSEEK_BASE_URL: string = 'https://api.deepseek.com/v1';
 
+  // OpenAI
+  @IsString()
+  OPENAI_API_KEY!: string;
+
   // Validation
   @IsBoolean()
   ENABLE_REQUEST_VALIDATION: boolean = true;
@@ -74,6 +78,7 @@ export const validateEnvironment = () => {
     'WHATSAPP_PHONE_NUMBER_ID',
     'WHATSAPP_BUSINESS_ACCOUNT_ID',
     'DEEPSEEK_API_KEY',
+    'OPENAI_API_KEY',
     'REDIS_HOST',
     'REDIS_PORT',
     'NODE_ENV'
@@ -144,6 +149,11 @@ export default {
   deepseek: {
     apiKey: config.DEEPSEEK_API_KEY,
     baseUrl: config.DEEPSEEK_BASE_URL,
+  },
+
+  // OpenAI
+  openai: {
+    apiKey: config.OPENAI_API_KEY,
   },
 
   // Features
