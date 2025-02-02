@@ -1,4 +1,3 @@
-import whapi from '@api/whapi';
 import { container } from 'tsyringe';
 import config from '../../config';
 import logger from '../shared/logger';
@@ -9,10 +8,6 @@ import { ErrorHandler } from '../shared/ErrorHandler';
 const openAIService = container.resolve(OpenAIService);
 
 export class WhatsAppAdapter {
-  constructor() {
-    whapi.auth(config.whatsapp.apiKey);
-  }
-
   // Parse incoming WhatsApp webhook payload
   async parseIncomingMessage(body: any): Promise<IncomingMessage> {
     try {
@@ -59,11 +54,22 @@ export class WhatsAppAdapter {
     }
 
     try {
-      whapi.sendMessageText({
-        to: `${message.userId}@s.whatsapp.net`,
-        body: message.content.body,
-      })
-        .then(({ data }) => console.log(data))
+      const whapiOptions = {
+        method: 'POST',
+        headers: {
+          accept: 'application/json',
+          'content-type': 'application/json',
+          authorization: `Bearer ${config.whatsapp.apiKey}`
+        },
+        body: JSON.stringify({
+          to: `${message.userId}@s.whatsapp.net`,
+          body: message.content.body
+        })
+      };
+
+      fetch('https://gate.whapi.cloud/messages/text', whapiOptions)
+        .then(res => res.json())
+        .then(res => console.log(res))
         .catch(err => console.error(err));
     } catch (error) {
       logger.error('Failed to send WhatsApp message:', (error as any).response?.data || (error as any).message);
