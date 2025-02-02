@@ -2,7 +2,8 @@ import type * as types from './types';
 import type { ConfigOptions, FetchResponse } from 'api/dist/core/index.js';
 import Oas from 'oas';
 import APICore from 'api/dist/core/index.js';
-import definition from './openapi.json';
+// import definition from './openapi.json';
+const definition = require('./openapi.json');
 
 class SDK {
   spec: Oas;
