@@ -38,3 +38,16 @@ export interface TemplateParameter {
     fallback_value: string;
   };
 }
+
+export interface TextMessae {
+  body: string;
+}
+
+export interface AudioMessage {
+  id: string,
+  mime_type: string,
+  file_size: number,
+  sha256: string,
+  link: string,
+  seconds: number
+}
