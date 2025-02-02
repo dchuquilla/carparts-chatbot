@@ -2,6 +2,7 @@ import { Redis } from 'ioredis';
 import { ISessionRepository } from '../../core/session/interfaces/ISessionRepository';
 import { Session } from '../../core/session/Session';
 import logger from '../../infrastructure/shared/logger';
+import { RequestPayload } from '../../core/messaging/WhatsAppTypes';
 
 interface RedisConnectionOptions {
   host: string;
@@ -27,8 +28,17 @@ export class RedisSessionRepository implements ISessionRepository {
       logger.error('[RedisConnectionOptions] Redis connection error:', options, err));
   }
 
-  async getSession(userId: string): Promise<Session> {
+  async getSession(userId: string, request: RequestPayload): Promise<Session> {
     try {
+      if (request?.message) {
+        return new Session(
+          userId,
+          request.message,
+          request?.request,
+          new Date(),
+        );
+      }
+
       const data = await this.client.get(this.getKey(userId));
 
       if (!data) {
