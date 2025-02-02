@@ -5,6 +5,7 @@ var MessageType;
 (function (MessageType) {
     MessageType["TEXT"] = "text";
     MessageType["AUDIO"] = "audio";
+    MessageType["VOICE"] = "voice";
     MessageType["TEMPLATE"] = "template";
     MessageType["UNKNOWN"] = "unknown";
 })(MessageType || (exports.MessageType = MessageType = {}));

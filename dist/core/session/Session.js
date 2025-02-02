@@ -67,7 +67,9 @@ class Session {
             PARSE_REQUEST: ['COLLECT_DATA', 'SEARCH'],
             COLLECT_DATA: ['SEARCH'],
             SEARCH: ['CONFIRMATION', 'COLLECT_DATA'],
-            CONFIRMATION: ['GREETING']
+            CONFIRMATION: ['GREETING'],
+            NO_REPLACEMENT: ['GREETING'],
+            ERROR_CREATE_REQUEST: ['GREETING'],
         };
         return validTransitions[this._currentState]?.includes(newState) ?? false;
     }

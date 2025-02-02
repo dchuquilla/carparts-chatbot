@@ -26,13 +26,15 @@ let ChatEngine = class ChatEngine {
         this.stateFactory = stateFactory;
         this.sessionRepo = sessionRepo;
     }
-    async processMessage(userId, message) {
+    async processMessage(userId, messagePayload) {
+        console.log('Processing message:', messagePayload);
         try {
-            const session = await this.sessionRepo.getSession(userId);
+            const session = await this.sessionRepo.getSession(userId, messagePayload);
             const currentState = this.stateFactory.create(session.currentState);
-            const transition = await currentState.handleInput(message, session);
+            const transition = await currentState.handleInput(messagePayload.message, session);
             session.transitionTo(transition.nextState(session.currentState));
             await this.sessionRepo.updateSession(session);
+            return currentState.getPrompt(session);
         }
         catch (error) {
             logger_1.default.error(`Failed to process message for user ${userId}:`, error);

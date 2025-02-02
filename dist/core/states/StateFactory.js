@@ -19,6 +19,7 @@ const ParseRequestState_1 = require("./ParseRequestState");
 const CollectDataState_1 = require("./CollectDataState");
 const SearchState_1 = require("./SearchState");
 const ConfirmationState_1 = require("./ConfirmationState");
+const NoReplacementState_1 = require("./NoReplacementState");
 let StateFactory = class StateFactory {
     StateDependencies;
     states = {
@@ -26,7 +27,8 @@ let StateFactory = class StateFactory {
         PARSE_REQUEST: ParseRequestState_1.ParseRequestState,
         COLLECT_DATA: CollectDataState_1.CollectDataState,
         SEARCH: SearchState_1.SearchState,
-        CONFIRMATION: ConfirmationState_1.ConfirmationState
+        CONFIRMATION: ConfirmationState_1.ConfirmationState,
+        NO_REPLACEMENT: NoReplacementState_1.NoReplacementState,
     };
     constructor(StateDependencies) {
         this.StateDependencies = StateDependencies;

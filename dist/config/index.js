@@ -64,11 +64,11 @@ class EnvironmentVariables {
     REDIS_PASSWORD = '';
     // WhatsApp
     WHATSAPP_API_KEY;
-    WHATSAPP_PHONE_NUMBER_ID;
-    WHATSAPP_BUSINESS_ACCOUNT_ID;
     // DeepSeek API
     DEEPSEEK_API_KEY;
     DEEPSEEK_BASE_URL = 'https://api.deepseek.com/v1';
+    // OpenAI
+    OPENAI_API_KEY;
     // Validation
     ENABLE_REQUEST_VALIDATION = true;
     // Security
@@ -121,19 +121,15 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], EnvironmentVariables.prototype, "WHATSAPP_PHONE_NUMBER_ID", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], EnvironmentVariables.prototype, "WHATSAPP_BUSINESS_ACCOUNT_ID", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
 ], EnvironmentVariables.prototype, "DEEPSEEK_API_KEY", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], EnvironmentVariables.prototype, "DEEPSEEK_BASE_URL", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], EnvironmentVariables.prototype, "OPENAI_API_KEY", void 0);
 __decorate([
     (0, class_validator_1.IsBoolean)(),
     __metadata("design:type", Boolean)
@@ -148,9 +144,8 @@ const validateEnvironment = () => {
         'DB_USERNAME',
         'DB_PASSWORD',
         'WHATSAPP_API_KEY',
-        'WHATSAPP_PHONE_NUMBER_ID',
-        'WHATSAPP_BUSINESS_ACCOUNT_ID',
         'DEEPSEEK_API_KEY',
+        'OPENAI_API_KEY',
         'REDIS_HOST',
         'REDIS_PORT',
         'NODE_ENV'
@@ -201,13 +196,15 @@ exports.default = {
     // WhatsApp
     whatsapp: {
         apiKey: config.WHATSAPP_API_KEY,
-        phoneNumberId: config.WHATSAPP_PHONE_NUMBER_ID,
-        businessAccountId: config.WHATSAPP_BUSINESS_ACCOUNT_ID,
     },
     // DeepSeek
     deepseek: {
         apiKey: config.DEEPSEEK_API_KEY,
         baseUrl: config.DEEPSEEK_BASE_URL,
+    },
+    // OpenAI
+    openai: {
+        apiKey: config.OPENAI_API_KEY,
     },
     // Features
     features: {

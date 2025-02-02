@@ -20,8 +20,11 @@ class RedisSessionRepository {
         this.client.on('connect', () => logger_1.default.info('Connected to Redis server'));
         this.client.on('error', (err) => logger_1.default.error('[RedisConnectionOptions] Redis connection error:', options, err));
     }
-    async getSession(userId) {
+    async getSession(userId, request) {
         try {
+            if (request?.message) {
+                return new Session_1.Session(userId, request.message, request?.request, new Date());
+            }
             const data = await this.client.get(this.getKey(userId));
             if (!data) {
                 return new Session_1.Session(userId, 'GREETING', {}, new Date());
