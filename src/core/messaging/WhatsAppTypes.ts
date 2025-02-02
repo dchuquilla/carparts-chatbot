@@ -11,7 +11,7 @@ export interface IncomingMessage {
   messageId: string;
   timestamp: Date;
   type: MessageType;
-  content: string;
+  content: RequestPayload;
   raw: any;
 }
 
@@ -39,10 +39,6 @@ export interface TemplateParameter {
   };
 }
 
-export interface TextMessae {
-  body: string;
-}
-
 export interface AudioMessage {
   id: string,
   mime_type: string,
@@ -50,4 +46,14 @@ export interface AudioMessage {
   sha256: string,
   link: string,
   seconds: number
+}
+
+export interface RequestPayload {
+  message: string;
+  request?: {
+    replacement: string;
+    brand: string;
+    model: string;
+    year: string;
+  }
 }

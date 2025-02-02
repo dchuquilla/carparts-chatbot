@@ -1,10 +1,13 @@
 import { Request } from 'express';
 import axios from 'axios';
-import crypto from 'crypto';
+import { container } from 'tsyringe';
 import config from '../../config';
 import logger from '../shared/logger';
-import { MessageType, type IncomingMessage, type OutgoingMessage } from '.././../core/messaging/WhatsAppTypes';
+import { MessageType, type RequestPayload, type IncomingMessage, type OutgoingMessage } from '.././../core/messaging/WhatsAppTypes';
+import { OpenAIService } from '../../services/llmsources/OpenAIService';
 import { ErrorHandler } from '../shared/ErrorHandler';
+
+const openAIService = container.resolve(OpenAIService);
 
 export class WhatsAppAdapter {
   private readonly apiVersion = 'v18.0';
@@ -15,22 +18,27 @@ export class WhatsAppAdapter {
   }
 
   // Parse incoming WhatsApp webhook payload
-  parseIncomingMessage(body: any): IncomingMessage {
+  async parseIncomingMessage(body: any): Promise<IncomingMessage> {
     try {
-      const entry = body.entry?.[0];
-      const changes = entry?.changes?.[0];
-      const message = changes?.value?.messages?.[0];
+      const message = body?.messages?.[0];
+      const enabledTypes = ['text', 'audio', 'voice'];
 
       if (!message) {
         throw new Error('INVALID_WHATSAPP_PAYLOAD');
       }
+
+      if (enabledTypes.indexOf(message.type) === -1) {
+        throw new Error('INVALID_MESSAGE_TYPE');
+      }
+
+      const messageData = await this.getContent(message);
 
       return {
         userId: message.from,
         messageId: message.id,
         timestamp: new Date(parseInt(message.timestamp) * 1000),
         type: this.getMessageType(message),
-        content: this.getContent(message),
+        content: messageData,
         raw: message
       };
     } catch (error) {
@@ -39,40 +47,12 @@ export class WhatsAppAdapter {
     }
   }
 
-  // Verify incoming webhook signature
-  verifySignature(req: Request): boolean {
-    if (!config.app.isProduction) return true;
-
-    const signature = req.headers['x-hub-signature-256'] as string;
-    if (!signature) return false;
-
-    const hmac = crypto.createHmac('sha256', config.whatsapp.apiKey);
-    const digest = hmac.update(JSON.stringify(req.body)).digest('hex');
-
-    return `sha256=${digest}` === signature;
-  }
-
   // Send text message to user
   async sendTextMessage(userId: string, text: string): Promise<void> {
     await this.sendMessage({
       userId,
       type: MessageType.TEXT,
       content: { body: text }
-    });
-  }
-
-  // Send template message (e.g., proposal notifications)
-  async sendTemplateMessage(userId: string, templateName: string, parameters: string[]): Promise<void> {
-    await this.sendMessage({
-      userId,
-      type: MessageType.TEMPLATE,
-      content: {
-        name: templateName,
-        components: [{
-          type: 'body',
-          parameters: parameters.map(value => ({ type: 'text', text: value }))
-        }]
-      }
     });
   }
 
@@ -104,33 +84,23 @@ export class WhatsAppAdapter {
   private getMessageType(message: any): MessageType {
     if (message.text) return MessageType.TEXT;
     if (message.audio) return MessageType.AUDIO;
+    if (message.voice) return MessageType.VOICE;
     return MessageType.UNKNOWN;
   }
 
-  private getContent(message: any): string {
+  private async getContent(message: any): Promise<RequestPayload> {
+    let textTranscription: string;
     switch (this.getMessageType(message)) {
       case MessageType.TEXT:
-        return message.text.body;
+        return openAIService.parseMessage(message.text.body);
       case MessageType.AUDIO:
-        return message.audio.id; // Reference for audio processing
+        textTranscription = await openAIService.transcribeAudio(message.audio);
+        return openAIService.parseMessage(textTranscription);;
+      case MessageType.VOICE:
+        textTranscription = await openAIService.transcribeAudio(message.voice);
+        return openAIService.parseMessage(textTranscription);;
       default:
-        return JSON.stringify(message);
-    }
-  }
-
-  // Audio message handling (optional integration)
-  async processAudioMessage(audioId: string): Promise<string> {
-    try {
-      const response = await axios.get(`${this.baseUrl}/media/${audioId}`, {
-        headers: { Authorization: `Bearer ${config.whatsapp.apiKey}` }
-      });
-
-      // Here you would integrate with DeepSeek's ASR (Automatic Speech Recognition)
-      // For now, return placeholder text
-      return '[Audio transcription placeholder]';
-    } catch (error) {
-      logger.error('Failed to process audio message:', error);
-      throw new ErrorHandler().createError('AUDIO_PROCESSING_FAILED');
+        return { message: 'TYPE NOT SUPPORTED' };
     }
   }
 }
