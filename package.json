@@ -12,18 +12,19 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "express": "^4.21.2",
-    "ioredis": "^5.4.2",
-    "pg": "^8.13.1",
-    "dotenv": "^16.4.7",
-    "winston": "^3.17.0",
+    "@api/whapi": "file:.api/apis/whapi",
     "axios": "^1.7.9",
-    "tsyringe": "^4.8.0",
-    "reflect-metadata": "^0.2.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "ioredis": "^5.4.2",
+    "openai": "^4.82.0",
+    "pg": "^8.13.1",
+    "reflect-metadata": "^0.2.2",
+    "tsyringe": "^4.8.0",
     "typeorm": "^0.3.20",
-    "openai": "^4.82.0"
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
