@@ -36,34 +36,49 @@ export class OpenAIService implements ILLMStrategy {
   }
 
   async transcribeAudio(input: AudioMessage): Promise<string> {
-    console.log("Transcribing audio: ", input.link, input.id);
-    const url = input.link;
-    const filePath = `./files/${input.id}.ogg`;
+    try {
+      console.log("Transcribing audio: ", input.link, input.id);
+      const url = input.link;
+      const filePath = `./files/${input.id}.ogg`;
 
-    // Download the file
-    const response = await axios({
-        url,
-        method: 'GET',
-        responseType: 'stream'
-    });
+      // Ensure the 'files' directory exists
+      if (!fs.existsSync('./files')) {
+        fs.mkdirSync('./files');
+      }
 
-    // Save the file locally
-    const writer = fs.createWriteStream(filePath);
-    response.data.pipe(writer);
+      // Download the file
+      const response = await axios({
+          url,
+          method: 'GET',
+          responseType: 'stream'
+      });
 
-    // Wait for the file to be fully written
-    await new Promise((resolve, reject) => {
-        writer.on('finish', () => resolve(undefined));
-        writer.on('error', reject);
-    });
+      // Save the file locally
+      const writer = fs.createWriteStream(filePath);
+      await response.data.pipe(writer);
 
-    // Send audio to OpenAI and transcribe
-    const transcription = await openai.audio.transcriptions.create({
-      file: fs.createReadStream(filePath),
-      model: "whisper-1",
-    });
+      // Wait for the file to be fully written
+      await new Promise((resolve, reject) => {
+          writer.on('finish', () => resolve(undefined));
+          writer.on('error', reject);
+      });
 
-    console.log("Transcription: ", transcription.text)
-    return transcription.text;
+      // Send audio to OpenAI and transcribe
+      const transcription = await openai.audio.transcriptions.create({
+        file: fs.createReadStream(filePath),
+        model: "whisper-1",
+      });
+
+      console.log("Transcription completed: ", transcription.text);
+
+      // Delete the file after transcription
+      fs.unlinkSync(filePath);
+
+      return transcription.text;
+    } catch (error) {
+      console.log("Transcription Error: ", error)
+      return "ERROR_TRANSCRIPTION"
+
+    }
   }
 }
