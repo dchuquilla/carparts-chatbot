@@ -38,30 +38,42 @@ class OpenAIService {
         }
     }
     async transcribeAudio(input) {
-        console.log("Transcribing audio: ", input.link, input.id);
-        const url = input.link;
-        const filePath = `./files/${input.id}.ogg`;
-        // Download the file
-        const response = await (0, axios_1.default)({
-            url,
-            method: 'GET',
-            responseType: 'stream'
-        });
-        // Save the file locally
-        const writer = fs_1.default.createWriteStream(filePath);
-        response.data.pipe(writer);
-        // Wait for the file to be fully written
-        await new Promise((resolve, reject) => {
-            writer.on('finish', () => resolve(undefined));
-            writer.on('error', reject);
-        });
-        // Send audio to OpenAI and transcribe
-        const transcription = await openai.audio.transcriptions.create({
-            file: fs_1.default.createReadStream(filePath),
-            model: "whisper-1",
-        });
-        console.log("Transcription: ", transcription.text);
-        return transcription.text;
+        try {
+            console.log("Transcribing audio: ", input.link, input.id);
+            const url = input.link;
+            const filePath = `./files/${input.id}.ogg`;
+            // Ensure the 'files' directory exists
+            if (!fs_1.default.existsSync('./files')) {
+                fs_1.default.mkdirSync('./files');
+            }
+            // Download the file
+            const response = await (0, axios_1.default)({
+                url,
+                method: 'GET',
+                responseType: 'stream'
+            });
+            // Save the file locally
+            const writer = fs_1.default.createWriteStream(filePath);
+            await response.data.pipe(writer);
+            // Wait for the file to be fully written
+            await new Promise((resolve, reject) => {
+                writer.on('finish', () => resolve(undefined));
+                writer.on('error', reject);
+            });
+            // Send audio to OpenAI and transcribe
+            const transcription = await openai.audio.transcriptions.create({
+                file: fs_1.default.createReadStream(filePath),
+                model: "whisper-1",
+            });
+            console.log("Transcription completed: ", transcription.text);
+            // Delete the file after transcription
+            fs_1.default.unlinkSync(filePath);
+            return transcription.text;
+        }
+        catch (error) {
+            console.log("Transcription Error: ", error);
+            return "ERROR_TRANSCRIPTION";
+        }
     }
 }
 exports.OpenAIService = OpenAIService;
