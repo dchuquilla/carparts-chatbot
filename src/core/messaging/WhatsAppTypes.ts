@@ -13,7 +13,7 @@ export interface IncomingMessage {
   messageId: string;
   timestamp: Date;
   type: MessageType;
-  content: RequestPayload;
+  content: RequestPayload | SearchResultsPayload;
   raw: any;
 }
 
@@ -52,10 +52,24 @@ export interface AudioMessage {
 
 export interface RequestPayload {
   message: StateName;
-  request?: {
-    replacement: string;
-    brand: string;
-    model: string;
-    year: string;
-  }
+  request?: ParseRequestPayload
+}
+
+export type ParseRequestPayload = {
+  replacement: string;
+  brand: string;
+  model: string;
+  year: string;
+}
+
+export type SearchResultPayload = {
+  name: string,
+  description: string,
+  price: number,
+  store: string,
+  url: string,
+}
+export type SearchResultsPayload = {
+  message: string;
+  results: SearchResultPayload[];
 }

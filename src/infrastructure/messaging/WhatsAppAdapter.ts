@@ -1,7 +1,7 @@
 import { container } from 'tsyringe';
 import config from '../../config';
 import logger from '../shared/logger';
-import { MessageType, type RequestPayload, type IncomingMessage, type OutgoingMessage } from '.././../core/messaging/WhatsAppTypes';
+import { MessageType, type RequestPayload, type IncomingMessage, type OutgoingMessage, SearchResultsPayload, ParseRequestPayload } from '.././../core/messaging/WhatsAppTypes';
 import { OpenAIService } from '../../services/llmsources/OpenAIService';
 import { ErrorHandler } from '../shared/ErrorHandler';
 
@@ -24,14 +24,33 @@ export class WhatsAppAdapter {
 
       const messageData = await this.getContent(message);
 
-      return {
-        userId: message.from,
-        messageId: message.id,
-        timestamp: new Date(parseInt(message.timestamp) * 1000),
-        type: this.getMessageType(message),
-        content: messageData,
-        raw: message
-      };
+      switch (messageData.message) {
+        case 'PARSE_REQUEST':
+          if (messageData.request) {
+            const searchResults = await this.searchParts(messageData.request);
+
+            return {
+              userId: message.from,
+              messageId: message.id,
+              timestamp: new Date(parseInt(message.timestamp) * 1000),
+              type: this.getMessageType(message),
+              content: searchResults,
+              raw: message
+            };
+          } else {
+            throw new Error('INVALID_REQUEST_PAYLOAD');
+          }
+        default:
+          return {
+            userId: message.from,
+            messageId: message.id,
+            timestamp: new Date(parseInt(message.timestamp) * 1000),
+            type: this.getMessageType(message),
+            content: messageData,
+            raw: message
+          };
+      }
+
     } catch (error) {
       logger.error('Failed to parse WhatsApp message:', error);
       throw new ErrorHandler().createError('MESSAGE_PARSE_ERROR');
@@ -98,5 +117,9 @@ export class WhatsAppAdapter {
       default:
         return { message: 'NO_REPLACEMENT' };
     }
+  }
+
+  private async searchParts(input: ParseRequestPayload): Promise<SearchResultsPayload> {
+    return await openAIService.searchParts(input);
   }
 }
