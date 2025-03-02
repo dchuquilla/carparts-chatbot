@@ -15,6 +15,6 @@ export class GreetingState implements IState {
   }
 
   getPrompt(session: Session): string {
-    return '¡Hola! ¿Qué repuesto necesitas para tu vehículo?';
+    return '¡Hola! Soy un BOT creado para ayudarte a buscar el repuesto ideal y sin complicaciones. Por favor dime, ¿Qué repuesto necesitas para tu vehículo?';
   }
 }

@@ -6,6 +6,7 @@ import { injectable } from 'tsyringe';
 export class ParseRequestState implements IState {
   async handleInput(input: string, session: Session): Promise<Session> {
     // Parse incoming message
+
     session.transitionTo('COLLECT_DATA');
     return session;
   }
@@ -15,6 +16,6 @@ export class ParseRequestState implements IState {
   }
 
   getPrompt(session: Session): string {
-    return 'Por favor, envíame una foto de la pieza que necesitas';
+    return 'Estamos procesando tu solicitud, por favor espera un momento...';
   }
 }
