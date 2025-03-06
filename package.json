@@ -2,10 +2,10 @@
   "name": "carparts-chatbot",
   "version": "1.0.0",
   "description": "Car Parts Whatsapp Chatbot",
-  "main": "dist/src/infrastructure/web/server.js",
+  "main": "dist/infrastructure/web/server.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/src/infrastructure/web/server.js",
+    "start": "node dist/infrastructure/web/server.js",
     "dev": "nodemon --exec ts-node src/infrastructure/web/server.ts",
     "test": "jest --coverage",
     "lint": "eslint . --ext .ts,.tsx --fix",
