@@ -40,6 +40,9 @@ router.post('/webhook/whatsapp/messages', async (req, res) => {
         if (req.body?.messages[0]?.from_me) {
             return res.status(200).send('OK');
         }
+        if (req.body?.messages[0]?.from !== "593992513609") {
+            return res.status(200).send('OK');
+        }
         console.log("body:", req.body);
         const message = await whatsAppAdapter.parseIncomingMessage(req.body);
         const response = await chatEngine.processMessage(message.userId, message.content);

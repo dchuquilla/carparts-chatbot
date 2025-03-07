@@ -18,7 +18,7 @@ let ParseRequestState = class ParseRequestState {
         return 'COLLECT_DATA';
     }
     getPrompt(session) {
-        return 'Por favor, envíame una foto de la pieza que necesitas';
+        return 'Estamos procesando tu solicitud, por favor espera un momento...';
     }
 };
 exports.ParseRequestState = ParseRequestState;

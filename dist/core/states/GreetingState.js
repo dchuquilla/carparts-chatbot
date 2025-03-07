@@ -18,7 +18,7 @@ let GreetingState = class GreetingState {
         return 'PARSE_REQUEST';
     }
     getPrompt(session) {
-        return '¡Hola! ¿Qué repuesto necesitas para tu vehículo?';
+        return `💁‍♂️ ¡Hola! Bienvenido a QuienTiene.com. \n\n*El repuesto ideal sin complicaciones*. \n\nPor favor dime ¿Qué repuesto necesitas para tu auto?`;
     }
 };
 exports.GreetingState = GreetingState;
