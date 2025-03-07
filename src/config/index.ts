@@ -61,6 +61,10 @@ class EnvironmentVariables {
   // Security
   @IsString()
   SESSION_SECRET: string = 'your-secret-key-here';
+
+  // Backend
+  @IsString()
+  BACKEND_URL: string = 'http://localhost:3000';
 }
 
 export const validateEnvironment = () => {
@@ -73,7 +77,8 @@ export const validateEnvironment = () => {
     'OPENAI_API_KEY',
     'REDIS_HOST',
     'REDIS_PORT',
-    'NODE_ENV'
+    'NODE_ENV',
+    'BACKEND_URL'
   ];
 
   const missingVars = requiredVars.filter((varName) => !process.env[varName]);
@@ -154,5 +159,10 @@ export default {
   // Security
   security: {
     sessionSecret: config.SESSION_SECRET,
+  },
+
+  // Backend
+  backend: {
+    url: config.BACKEND_URL,
   },
 };
