@@ -15,6 +15,6 @@ export class GreetingState implements IState {
   }
 
   getPrompt(session: Session): string {
-    return '¡Hola! Soy un BOT creado para ayudarte a buscar el repuesto ideal y sin complicaciones. Por favor dime, ¿Qué repuesto necesitas para tu vehículo?';
+    return `💁‍♂️ ¡Hola! Bienvenido a QuienTiene.com. \n\n*El repuesto ideal sin complicaciones*. \n\nPor favor dime ¿Qué repuesto necesitas para tu auto?`;
   }
 }
