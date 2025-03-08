@@ -7,6 +7,7 @@ import { RedisSessionRepository } from '../../data/repositories/RedisSessionRepo
 import { ErrorHandler } from '../shared/ErrorHandler';
 import { StateFactory } from "../../core/states/StateFactory";
 import { ChatEngine } from "../../core/engine/ChatEngine";
+import { RubyOnRailsBackend } from "../../services/backends/RubyOnRailsBackend";
 
 export async function createServer() {
   const app = express();
@@ -51,6 +52,13 @@ export async function createServer() {
 
   container.register('stateFactory', { useClass: StateFactory });
   container.register('chatEngine', { useClass: ChatEngine });
+
+  const backendClient = new RubyOnRailsBackend({
+    url: config.backend.url,
+  });
+  container.register('IBackendRepository', {
+    useValue: backendClient
+  });
 
   // ======================
   //  Route Registration
