@@ -3,7 +3,7 @@ import OpenAI from "openai";
 import fs from "fs";
 import config from "../../config";
 import { ILLMStrategy } from "../interfaces/ILLMStrategy";
-import { AudioMessage, MessageType, RequestPayload, type IncomingMessage, type OutgoingMessage } from "../../core/messaging/WhatsAppTypes";
+import { AudioMessage, RequestPayload } from "../../core/messaging/WhatsAppTypes";
 
 const openai = new OpenAI({
   apiKey: config.openai.apiKey,
