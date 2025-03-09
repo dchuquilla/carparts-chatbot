@@ -22,9 +22,11 @@ const StateFactory_1 = require("../states/StateFactory");
 let ChatEngine = class ChatEngine {
     stateFactory;
     sessionRepo;
-    constructor(stateFactory, sessionRepo) {
+    backendRepo;
+    constructor(stateFactory, sessionRepo, backendRepo) {
         this.stateFactory = stateFactory;
         this.sessionRepo = sessionRepo;
+        this.backendRepo = backendRepo;
     }
     async processMessage(userId, messagePayload) {
         console.log('Processing message:', messagePayload);
@@ -32,7 +34,9 @@ let ChatEngine = class ChatEngine {
             const session = await this.sessionRepo.getSession(userId, messagePayload);
             const currentState = this.stateFactory.create(session.currentState);
             const transition = await currentState.handleInput(messagePayload.message, session);
-            session.transitionTo(transition.nextState(session.currentState));
+            const nextState = transition.nextState(session.currentState);
+            session.transitionTo(nextState);
+            this.handleRequest(nextState, transition);
             await this.sessionRepo.updateSession(session);
             return currentState.getPrompt(session);
         }
@@ -41,11 +45,25 @@ let ChatEngine = class ChatEngine {
             throw error;
         }
     }
+    async handleRequest(state, request) {
+        if (state !== 'SEARCH') {
+            return;
+        }
+        const requestPayload = {
+            user_phone: request.userId,
+            part_name: request.data.replacement,
+            part_brand: request.data.brand,
+            part_model: request.data.model,
+            part_year: request.data.year
+        };
+        await this.backendRepo.saveRequest(requestPayload);
+    }
 };
 exports.ChatEngine = ChatEngine;
 exports.ChatEngine = ChatEngine = __decorate([
     (0, tsyringe_1.injectable)(),
     __param(0, (0, tsyringe_1.inject)('stateFactory')),
     __param(1, (0, tsyringe_1.inject)('ISessionRepository')),
-    __metadata("design:paramtypes", [StateFactory_1.StateFactory, Object])
+    __param(2, (0, tsyringe_1.inject)('IBackendRepository')),
+    __metadata("design:paramtypes", [StateFactory_1.StateFactory, Object, Object])
 ], ChatEngine);

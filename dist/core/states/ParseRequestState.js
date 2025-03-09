@@ -10,7 +10,6 @@ exports.ParseRequestState = void 0;
 const tsyringe_1 = require("tsyringe");
 let ParseRequestState = class ParseRequestState {
     async handleInput(input, session) {
-        // Parse incoming message
         session.transitionTo('COLLECT_DATA');
         return session;
     }

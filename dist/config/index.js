@@ -73,6 +73,8 @@ class EnvironmentVariables {
     ENABLE_REQUEST_VALIDATION = true;
     // Security
     SESSION_SECRET = 'your-secret-key-here';
+    // Backend
+    BACKEND_URL = 'http://localhost:3000';
 }
 __decorate([
     (0, class_validator_1.IsNumber)(),
@@ -138,6 +140,10 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], EnvironmentVariables.prototype, "SESSION_SECRET", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], EnvironmentVariables.prototype, "BACKEND_URL", void 0);
 const validateEnvironment = () => {
     const requiredVars = [
         'DB_HOST',
@@ -148,7 +154,8 @@ const validateEnvironment = () => {
         'OPENAI_API_KEY',
         'REDIS_HOST',
         'REDIS_PORT',
-        'NODE_ENV'
+        'NODE_ENV',
+        'BACKEND_URL'
     ];
     const missingVars = requiredVars.filter((varName) => !process.env[varName]);
     if (missingVars.length > 0) {
@@ -213,5 +220,9 @@ exports.default = {
     // Security
     security: {
         sessionSecret: config.SESSION_SECRET,
+    },
+    // Backend
+    backend: {
+        url: config.BACKEND_URL,
     },
 };
