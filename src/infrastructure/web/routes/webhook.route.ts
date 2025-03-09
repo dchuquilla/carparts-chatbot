@@ -18,18 +18,6 @@ router.get('/health', (req, res) => {
   });
 });
 
-// WhatsApp webhook verification
-router.get('/webhook/whatsapp', (req, res) => {
-  const challenge = req.query['hub.challenge'];
-  const verifyToken = req.query['hub.verify_token'];
-
-  if (verifyToken === config.whatsapp.apiKey) {
-    res.status(200).send(challenge);
-  } else {
-    res.status(403).send('Verification failed');
-  }
-});
-
 // Message processing endpoint
 router.post('/webhook/whatsapp/messages', async (req, res) => {
   try {
@@ -52,6 +40,18 @@ router.post('/webhook/whatsapp/messages', async (req, res) => {
     console.log("chat response:", response)
 
     whatsAppAdapter.sendTextMessage(message.userId, response);
+    res.status(200).send('OK');
+  } catch (error) {
+    ErrorHandler.handle(error as Error, res);
+  }
+});
+
+router.post('/webhook/requests/notify', async (req, res) => {
+  try {
+    console.log("Request body:", req.body);
+    const carRequest = req.body;
+
+    whatsAppAdapter.sendTextMessage(carRequest.userId, carRequest.message);
     res.status(200).send('OK');
   } catch (error) {
     ErrorHandler.handle(error as Error, res);
