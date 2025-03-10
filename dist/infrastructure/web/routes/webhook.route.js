@@ -9,6 +9,7 @@ const WhatsAppAdapter_1 = require("../../messaging/WhatsAppAdapter");
 const ChatEngine_1 = require("../../../core/engine/ChatEngine");
 const config_1 = __importDefault(require("../../../config"));
 const ErrorHandler_1 = require("../../shared/ErrorHandler");
+const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 const router = (0, express_1.Router)();
 const whatsAppAdapter = tsyringe_1.container.resolve(WhatsAppAdapter_1.WhatsAppAdapter);
 const chatEngine = tsyringe_1.container.resolve(ChatEngine_1.ChatEngine);
@@ -21,7 +22,15 @@ router.get('/health', (req, res) => {
     });
 });
 // Message processing endpoint
-router.post('/webhook/whatsapp/messages', async (req, res) => {
+const messageRateLimiter = (0, express_rate_limit_1.default)({
+    windowMs: 60 * 1000, // 1 minute
+    max: 10, // limit each user to 10 requests per windowMs
+    keyGenerator: (req) => req.body?.messages[0]?.from || '', // use the message sender as the key
+    handler: (req, res) => {
+        res.status(429).send('Too many requests, please try again later.');
+    },
+});
+router.post('/webhook/whatsapp/messages', messageRateLimiter, async (req, res) => {
     try {
         if (!req.body || !req.body.messages) {
             return res.status(400).send('Invalid request body');
