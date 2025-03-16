@@ -15,8 +15,8 @@ export async function createServer() {
   // ======================
   //  Middleware Setup
   // ======================
-  app.use(express.json({ limit: '10kb' }));
-  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json({ limit: '50kb' })); // Increase the limit here
+  app.use(express.urlencoded({ limit: '50kb', extended: true })); // Increase the limit here
 
   // Security headers
   app.use((req, res, next) => {
