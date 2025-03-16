@@ -15,12 +15,34 @@ export class RubyOnRailsBackend implements IBackendRepository {
 
   async saveRequest(request: RequestPayload): Promise<void> {
     try {
-      const response = await axios.post(`${this.url}/api/v1/requests`, {
-        request: request,
-      });
+      const backendRequestResponse = await axios.get(`${this.url}/api/v1/requests?q[user_phone_eq]=${request.user_phone}`);
+      console.log("backendRequestResponse:", backendRequestResponse.data);
+      let response = null;
+      if (backendRequestResponse.data.length > 0) {
+        response = await axios.put(`${this.url}/api/v1/requests/${backendRequestResponse.data[0].id}`, {
+          request: request,
+        });
+      } else {
+        response = await axios.post(`${this.url}/api/v1/requests`, {
+          request: request,
+        });
+      }
       console.log(response.data);
     } catch (error) {
       console.error(error);
     }
   }
+
+  // async updateRequest(request: RequestPayload): Promise<void> {
+  //   try {
+  //     const backendRequest = await axios.get(`${this.url}/api/v1/requests?q[user_phone_eq]=${request.user_phone}`);
+  //     console.log(backendRequest);
+  //     const response = await axios.put(`${this.url}/api/v1/requests/${backendRequest[0].id}`, {
+  //       request: request,
+  //     });
+  //     console.log(response.data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
 }
