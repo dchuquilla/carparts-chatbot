@@ -34,7 +34,7 @@ export class ChatEngine {
   }
 
   async handleRequest(state: string, request: Session): Promise<void> {
-    if (state !== 'SEARCH') {
+    if (state === 'GREETINGS') {
       return;
     }
     const requestPayload = {
@@ -42,7 +42,8 @@ export class ChatEngine {
       part_name: request.data.replacement,
       part_brand: request.data.brand,
       part_model: request.data.model,
-      part_year: request.data.year
+      part_year: request.data.year,
+      part_image: request.data.image,
     };
     await this.backendRepo.saveRequest(requestPayload);
   }

@@ -5,6 +5,7 @@ export enum MessageType {
   AUDIO = 'audio',
   VOICE = 'voice',
   TEMPLATE = 'template',
+  IMAGE = 'image',
   UNKNOWN = 'unknown'
 }
 
@@ -53,9 +54,10 @@ export interface AudioMessage {
 export interface RequestPayload {
   message: StateName;
   request?: {
-    replacement: string;
-    brand: string;
-    model: string;
-    year: string;
+    replacement?: string;
+    brand?: string;
+    model?: string;
+    year?: string;
+    image?: string;
   }
 }

@@ -5,5 +5,6 @@ export interface RequestPayload {
   part_name: string,
   part_brand: string,
   part_model: string,
-  part_year: number
+  part_year: number,
+  part_image?: string,
 }

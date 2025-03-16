@@ -12,7 +12,7 @@ export class WhatsAppAdapter {
   async parseIncomingMessage(body: any): Promise<IncomingMessage> {
     try {
       const message = body?.messages?.[0];
-      const enabledTypes = ['text', 'audio', 'voice'];
+      const enabledTypes = ['text', 'audio', 'voice', 'image'];
 
       if (!message) {
         throw new Error('INVALID_WHATSAPP_PAYLOAD');
@@ -21,7 +21,6 @@ export class WhatsAppAdapter {
       if (enabledTypes.indexOf(message.type) === -1) {
         throw new Error('INVALID_MESSAGE_TYPE');
       }
-
       const messageData = await this.getContent(message);
 
       return {
@@ -81,6 +80,7 @@ export class WhatsAppAdapter {
     if (message.text) return MessageType.TEXT;
     if (message.audio) return MessageType.AUDIO;
     if (message.voice) return MessageType.VOICE;
+    if (message.image) return MessageType.IMAGE;
     return MessageType.UNKNOWN;
   }
 
@@ -91,10 +91,12 @@ export class WhatsAppAdapter {
         return openAIService.parseMessage(message.text.body);
       case MessageType.AUDIO:
         textTranscription = await openAIService.transcribeAudio(message.audio);
-        return openAIService.parseMessage(textTranscription);;
+        return openAIService.parseMessage(textTranscription);
       case MessageType.VOICE:
         textTranscription = await openAIService.transcribeAudio(message.voice);
-        return openAIService.parseMessage(textTranscription);;
+        return openAIService.parseMessage(textTranscription);
+      case MessageType.IMAGE:
+        return { message: 'COLLECT_DATA', request: { image: message.image.link } };
       default:
         return { message: 'NO_REPLACEMENT' };
     }
