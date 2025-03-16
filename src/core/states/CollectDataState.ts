@@ -15,6 +15,6 @@ export class CollectDataState implements IState {
   }
 
   getPrompt(session: Session): string {
-    return 'Por favor, envíame una foto de la pieza que necesitas';
+    return '📷 La fotografía fue recibida, será agregada a la solucitud.';
   }
 }
