@@ -39,7 +39,7 @@ router.post('/webhook/whatsapp/messages', messageRateLimiter, async (req, res) =
       return res.status(200).send('OK');
     }
 
-    if (!["593992513609", "593999962229", "593996700384"].includes(req.body.messages[0].from)) {
+    if (!["593992513609", "593996700384"].includes(req.body.messages[0].from)) {
       return res.status(200).send('OK');
     }
 

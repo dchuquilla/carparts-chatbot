@@ -14,17 +14,19 @@ export class OpenAIService implements ILLMStrategy {
     try {
       const payload: any = await new Promise((resolve, reject) => {
         openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [
-          { role: "system", content: "Eres un experto en JSON. Por favor crea un objeto JSON siguiendo estas reglas" },
-          { role: "system", content: "ESTRUCTURA: {\"message\": \"PARSE_REQUEST\",\"request\": { \"replacement\": \"string\", \"brand\": \"string\", \"model\": \"string\", \"year\": \"string\" }}." },
-          { role: "system", content: "SALUDO: Cuando el texto sea un saludo sin informacion de alguna solicitud, responde con {\"message\": \"GREETING\"}" },
-          { role: "system", content: "EXCEPTION: Cuando el texto no sea un saludo o una solicitud de repuesto, responde con {\"message\": \"NO_REPLACEMENT\"}" },
-          {
-          role: "user",
-          content: input,
-          },
-        ],
+          model: "gpt-3.5-turbo",
+          messages: [
+            { role: "system", content: "Eres un experto en JSON. Por favor crea un objeto JSON siguiendo estas reglas" },
+            { role: "system", content: "ESTRUCTURA: {\"message\": \"PARSE_REQUEST\",\"request\": { \"replacement\": \"string\", \"brand\": \"string\", \"model\": \"string\", \"year\": \"string\" }}." },
+            { role: "system", content: "SALUDO: Cuando el texto sea un saludo sin informacion de alguna solicitud, responde con {\"message\": \"GREETING\"}" },
+            { role: "system", content: "COMENTARIO: Cuando el texto sea un comentario suelto sin relación a solicitar repuestos de auto, responde con {\"message\": \"COMMENT\"}" },
+            { role: "system", content: "INAPROPIADO: Cuando el texto sea un comentario con contenido sexual, insultante o acosador, responde con {\"message\": \"UNPLEASANT\"}" },
+            { role: "system", content: "EXCEPTION: Cuando el texto no sea un saludo, una solicitud de repuesto o un comentario, responde con {\"message\": \"NO_REPLACEMENT\"}" },
+            {
+              role: "user",
+              content: input,
+            },
+          ],
         }).then(resolve).catch(reject);
       });
       const requestPayload = JSON.parse(payload.choices[0].message.content);
@@ -48,9 +50,9 @@ export class OpenAIService implements ILLMStrategy {
 
       // Download the file
       const response = await axios({
-          url,
-          method: 'GET',
-          responseType: 'stream'
+        url,
+        method: 'GET',
+        responseType: 'stream'
       });
 
       // Save the file locally
@@ -59,8 +61,8 @@ export class OpenAIService implements ILLMStrategy {
 
       // Wait for the file to be fully written
       await new Promise((resolve, reject) => {
-          writer.on('finish', () => resolve(undefined));
-          writer.on('error', reject);
+        writer.on('finish', () => resolve(undefined));
+        writer.on('error', reject);
       });
 
       // Send audio to OpenAI and transcribe
