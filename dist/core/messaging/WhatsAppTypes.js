@@ -7,5 +7,6 @@ var MessageType;
     MessageType["AUDIO"] = "audio";
     MessageType["VOICE"] = "voice";
     MessageType["TEMPLATE"] = "template";
+    MessageType["IMAGE"] = "image";
     MessageType["UNKNOWN"] = "unknown";
 })(MessageType || (exports.MessageType = MessageType = {}));

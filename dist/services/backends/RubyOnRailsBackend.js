@@ -12,9 +12,19 @@ class RubyOnRailsBackend {
     }
     async saveRequest(request) {
         try {
-            const response = await axios_1.default.post(`${this.url}/api/v1/requests`, {
-                request: request,
-            });
+            const backendRequestResponse = await axios_1.default.get(`${this.url}/api/v1/requests?q[user_phone_eq]=${request.user_phone}`);
+            console.log("backendRequestResponse:", backendRequestResponse.data);
+            let response = null;
+            if (backendRequestResponse.data.length > 0) {
+                response = await axios_1.default.put(`${this.url}/api/v1/requests/${backendRequestResponse.data[0].id}`, {
+                    request: request,
+                });
+            }
+            else {
+                response = await axios_1.default.post(`${this.url}/api/v1/requests`, {
+                    request: request,
+                });
+            }
             console.log(response.data);
         }
         catch (error) {

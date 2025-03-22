@@ -52,8 +52,8 @@ async function createServer() {
     // ======================
     //  Middleware Setup
     // ======================
-    app.use(express_1.default.json({ limit: '10kb' }));
-    app.use(express_1.default.urlencoded({ extended: true }));
+    app.use(express_1.default.json({ limit: '50kb' })); // Increase the limit here
+    app.use(express_1.default.urlencoded({ limit: '50kb', extended: true })); // Increase the limit here
     // Security headers
     app.use((req, res, next) => {
         res.setHeader('X-Content-Type-Options', 'nosniff');

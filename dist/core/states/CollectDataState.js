@@ -18,7 +18,7 @@ let CollectDataState = class CollectDataState {
         return 'SEARCH';
     }
     getPrompt(session) {
-        return 'Por favor, envíame una foto de la pieza que necesitas';
+        return '📷 La fotografía fue recibida, será agregada a la solucitud.';
     }
 };
 exports.CollectDataState = CollectDataState;
