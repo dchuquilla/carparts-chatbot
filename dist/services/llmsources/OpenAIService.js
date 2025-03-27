@@ -19,11 +19,12 @@ class OpenAIService {
                     model: "gpt-3.5-turbo",
                     messages: [
                         { role: "system", content: "Eres un experto en JSON. Por favor crea un objeto JSON siguiendo estas reglas" },
-                        { role: "system", content: "ESTRUCTURA: {\"message\": \"PARSE_REQUEST\",\"request\": { \"replacement\": \"string\", \"brand\": \"string\", \"model\": \"string\", \"year\": \"string\" }}." },
-                        { role: "system", content: "SALUDO: Cuando el texto sea un saludo sin informacion de alguna solicitud, responde con {\"message\": \"GREETING\"}" },
-                        { role: "system", content: "COMENTARIO: Cuando el texto sea un comentario suelto sin relación a solicitar repuestos de auto, responde con {\"message\": \"COMMENT\"}" },
-                        { role: "system", content: "INAPROPIADO: Cuando el texto sea un comentario con contenido sexual, insultante o acosador, responde con {\"message\": \"UNPLEASANT\"}" },
-                        { role: "system", content: "EXCEPTION: Cuando el texto no sea un saludo, una solicitud de repuesto o un comentario, responde con {\"message\": \"NO_REPLACEMENT\"}" },
+                        { role: "system", content: "COMPLEMENTARIO: Cuando el texto sea información adicional con el formato de codigo de 8 caracteeres alfaniméricos para la solicitud de repuesto de auto, responde con {\"state\": \"COLLECT_DATA\",\"request\": { \"part_chassis\": \"string\" }}" },
+                        { role: "system", content: "COMENTARIO: Cuando el texto sea un comentario suelto sin relación a solicitar repuestos de auto, responde con {\"state\": \"COMMENT\"}" },
+                        { role: "system", content: "INAPROPIADO: Cuando el texto sea un comentario con contenido sexual, insultante o acosador, responde con {\"state\": \"UNPLEASANT\"}" },
+                        { role: "system", content: "EXCEPTION: Cuando el texto no sea un saludo, una solicitud de repuesto o un comentario, responde con {\"state\": \"NO_REPLACEMENT\"}" },
+                        { role: "system", content: "SALUDO: Cuando el texto sea un saludo sin informacion de alguna solicitud, responde con {\"state\": \"GREETING\"}" },
+                        { role: "system", content: "ESTRUCTURA: {\"state\": \"PARSE_REQUEST\",\"request\": { \"part_name\": \"string\", \"part_brand\": \"string\", \"part_model\": \"string\", \"part_year\": \"string\" }}." },
                         {
                             role: "user",
                             content: input,
@@ -36,7 +37,7 @@ class OpenAIService {
         }
         catch (error) {
             console.log("Error: ", error);
-            return { message: "ERROR_CREATE_REQUEST" };
+            return { state: "ERROR_CREATE_REQUEST" };
         }
     }
     async transcribeAudio(input) {

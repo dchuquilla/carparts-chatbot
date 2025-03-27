@@ -63,6 +63,7 @@ class Session {
     // Optional: Add custom validation logic
     isValidTransition(newState) {
         const validTransitions = {
+            NEW: ['GREETING'],
             GREETING: ['PARSE_REQUEST'],
             PARSE_REQUEST: ['COLLECT_DATA', 'SEARCH'],
             COLLECT_DATA: ['SEARCH'],
@@ -70,6 +71,8 @@ class Session {
             CONFIRMATION: ['GREETING'],
             NO_REPLACEMENT: ['GREETING'],
             ERROR_CREATE_REQUEST: ['GREETING'],
+            COMMENT: ['GREETING'],
+            UNPLEASANT: ['GREETING']
         };
         return validTransitions[this._currentState]?.includes(newState) ?? false;
     }

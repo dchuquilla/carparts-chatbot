@@ -42,11 +42,11 @@ const express_1 = __importDefault(require("express"));
 const tsyringe_1 = require("tsyringe");
 const config_1 = __importDefault(require("../../config"));
 const logger_1 = __importDefault(require("../shared/logger"));
-const RedisSessionRepository_1 = require("../../data/repositories/RedisSessionRepository");
 const ErrorHandler_1 = require("../shared/ErrorHandler");
-const StateFactory_1 = require("../../core/states/StateFactory");
 const ChatEngine_1 = require("../../core/engine/ChatEngine");
-const RubyOnRailsBackend_1 = require("../../services/backends/RubyOnRailsBackend");
+const BackendSessionRepository_1 = require("../../data/repositories/BackendSessionRepository");
+// import { RedisSessionRepository } from '../../data/repositories/RedisSessionRepository';
+// import { RubyOnRailsBackend } from "../../services/backends/RubyOnRailsBackend";
 async function createServer() {
     const app = (0, express_1.default)();
     // ======================
@@ -68,13 +68,19 @@ async function createServer() {
     // ======================
     //  Dependency Injection
     // ======================
-    const redisClient = new RedisSessionRepository_1.RedisSessionRepository({
-        host: config_1.default.redis.host,
-        port: config_1.default.redis.port,
-        password: config_1.default.redis.password,
+    // const redisClient = new RedisSessionRepository({
+    //   host: config.redis.host,
+    //   port: config.redis.port,
+    //   password: config.redis.password,
+    // });
+    // container.register('ISessionRepository', {
+    //   useValue: redisClient,
+    // });
+    const backendClient = new BackendSessionRepository_1.BackendSessionRepository({
+        url: config_1.default.backend.url,
     });
     tsyringe_1.container.register('ISessionRepository', {
-        useValue: redisClient,
+        useValue: backendClient,
     });
     tsyringe_1.container.register('stateDependencies', {
         useValue: {
@@ -82,14 +88,7 @@ async function createServer() {
             searchService: {},
         },
     });
-    tsyringe_1.container.register('stateFactory', { useClass: StateFactory_1.StateFactory });
     tsyringe_1.container.register('chatEngine', { useClass: ChatEngine_1.ChatEngine });
-    const backendClient = new RubyOnRailsBackend_1.RubyOnRailsBackend({
-        url: config_1.default.backend.url,
-    });
-    tsyringe_1.container.register('IBackendRepository', {
-        useValue: backendClient
-    });
     // ======================
     //  Route Registration
     // ======================
@@ -115,7 +114,7 @@ async function createServer() {
     process.on('SIGTERM', () => {
         logger_1.default.info('SIGTERM received: closing server');
         server.close(async () => {
-            await redisClient.disconnect();
+            // await redisClient.disconnect();
             process.exit(0);
         });
     });

@@ -18,53 +18,72 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChatEngine = void 0;
 const logger_1 = __importDefault(require("../../infrastructure/shared/logger"));
 const tsyringe_1 = require("tsyringe");
-const StateFactory_1 = require("../states/StateFactory");
 let ChatEngine = class ChatEngine {
-    stateFactory;
     sessionRepo;
-    backendRepo;
-    constructor(stateFactory, sessionRepo, backendRepo) {
-        this.stateFactory = stateFactory;
+    constructor(sessionRepo) {
         this.sessionRepo = sessionRepo;
-        this.backendRepo = backendRepo;
     }
     async processMessage(userId, messagePayload) {
         console.log('Processing message:', messagePayload);
         try {
-            const session = await this.sessionRepo.getSession(userId, messagePayload);
-            const currentState = this.stateFactory.create(session.currentState);
-            const transition = await currentState.handleInput(messagePayload.message, session);
-            const nextState = transition.nextState(session.currentState);
-            session.transitionTo(nextState);
-            this.handleRequest(nextState, transition);
-            await this.sessionRepo.updateSession(session);
-            return currentState.getPrompt(session);
+            let session = await this.sessionRepo.getSession(userId, messagePayload);
+            const defaultMessage = "Lo siento, parece que no puedo ayudarte con eso.\n🔎 ¿Qué repuesto necesitas para tu auto?\n🚘 Debes incluir Marca, Modelo y Año";
+            const greetingMessage = "💁‍♂️ ¡Hola! Bienvenido a QuienTiene.com.\n\n*El repuesto ideal sin complicaciones.*\n\n🔎 ¿Qué repuesto necesitas para tu auto?\n🚘 Debes incluir Marca, Modelo y Año\n🗣️ Puedes enviar un mensaje de voz.";
+            console.log('Session Backend:', session);
+            switch (messagePayload.state) {
+                case 'GREETING':
+                    if (session.currentState === 'NEW') {
+                        return greetingMessage;
+                    }
+                    else {
+                        if (session.data.pending_data) {
+                            return `Tu búsqueda de *${session.data.part_name}* está en proceso.\nPuedes agregar información para mejorar los resultados.\nTienes que enviar los siguientes datos:\n*${session.data.pending_data.join('\n')}*.`;
+                        }
+                        else {
+                            return `Tu búsqueda de ${session.data.part_name} está en proceso. ¿En qué más puedo ayudarte?`;
+                        }
+                    }
+                case 'PARSE_REQUEST':
+                    session = await this.sessionRepo.createSession(session.userId, messagePayload);
+                    return ``;
+                case 'COLLECT_DATA':
+                    await this.sessionRepo.updateSession(session, messagePayload);
+                    return "";
+                    break;
+                case 'COMMENT':
+                    return "Su comentartio será revisado por un moderador";
+                    break;
+                case 'UNPLEASANT':
+                    return "Su comentario ha sido marcado como inapropiado, corre el riesgo de ser bloqueado";
+                    break;
+                case 'NO_REPLACEMENT':
+                    return defaultMessage;
+                    break;
+            }
+            // await this.sessionRepo.updateSession(session);
+            return defaultMessage;
         }
         catch (error) {
             logger_1.default.error(`Failed to process message for user ${userId}:`, error);
             throw error;
         }
     }
-    async handleRequest(state, request) {
-        if (state === 'GREETINGS') {
-            return;
-        }
-        const requestPayload = {
-            user_phone: request.userId,
-            part_name: request.data.replacement,
-            part_brand: request.data.brand,
-            part_model: request.data.model,
-            part_year: request.data.year,
-            part_image: request.data.image,
+    handleRequest(state, request) {
+        return {
+            state: state,
+            request: {
+                part_name: request.data.replacement,
+                part_brand: request.data.brand,
+                part_model: request.data.model,
+                part_year: request.data.year,
+                part_image: request.data.image,
+            }
         };
-        await this.backendRepo.saveRequest(requestPayload);
     }
 };
 exports.ChatEngine = ChatEngine;
 exports.ChatEngine = ChatEngine = __decorate([
     (0, tsyringe_1.injectable)(),
-    __param(0, (0, tsyringe_1.inject)('stateFactory')),
-    __param(1, (0, tsyringe_1.inject)('ISessionRepository')),
-    __param(2, (0, tsyringe_1.inject)('IBackendRepository')),
-    __metadata("design:paramtypes", [StateFactory_1.StateFactory, Object, Object])
+    __param(0, (0, tsyringe_1.inject)('ISessionRepository')),
+    __metadata("design:paramtypes", [Object])
 ], ChatEngine);
