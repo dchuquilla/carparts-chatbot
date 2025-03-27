@@ -30,10 +30,10 @@ export class RedisSessionRepository implements ISessionRepository {
 
   async getSession(userId: string, request: RequestPayload): Promise<Session> {
     try {
-      if (request?.message) {
+      if (request?.state) {
         return new Session(
           userId,
-          request.message,
+          request.state,
           request?.request,
           new Date(),
         );
@@ -54,6 +54,22 @@ export class RedisSessionRepository implements ISessionRepository {
     } catch (error) {
       logger.error('Failed to get session:', error);
       throw new Error('SESSION_READ_FAILED');
+    }
+  }
+
+  async createSession(userId: string, request: RequestPayload): Promise<Session> {
+    try {
+      const session = new Session(
+        userId,
+        request.state,
+        request.request,
+        new Date(),
+      );
+
+      return session;
+    } catch (error) {
+      logger.error('Failed to create session:', error);
+      throw new Error('SESSION_CREATE_FAILED');
     }
   }
 

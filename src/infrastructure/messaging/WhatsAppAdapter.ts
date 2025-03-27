@@ -89,16 +89,13 @@ export class WhatsAppAdapter {
     switch (this.getMessageType(message)) {
       case MessageType.TEXT:
         return openAIService.parseMessage(message.text.body);
-      case MessageType.AUDIO:
-        textTranscription = await openAIService.transcribeAudio(message.audio);
-        return openAIService.parseMessage(textTranscription);
-      case MessageType.VOICE:
+      case MessageType.AUDIO || MessageType.VOICE:
         textTranscription = await openAIService.transcribeAudio(message.voice);
         return openAIService.parseMessage(textTranscription);
       case MessageType.IMAGE:
-        return { message: 'COLLECT_DATA', request: { image: message.image.link } };
+        return { state: 'COLLECT_DATA', request: { part_image: message.image.link } };
       default:
-        return { message: 'NO_REPLACEMENT' };
+        return { state: 'NO_REPLACEMENT' };
     }
   }
 }

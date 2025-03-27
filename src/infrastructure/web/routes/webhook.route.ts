@@ -39,17 +39,15 @@ router.post('/webhook/whatsapp/messages', messageRateLimiter, async (req, res) =
       return res.status(200).send('OK');
     }
 
-    if (!["593992513609", "593996700384"].includes(req.body.messages[0].from)) {
+    if (!["593992513609"].includes(req.body.messages[0].from)) {
       return res.status(200).send('OK');
     }
 
-    console.log("body:", req.body)
-
     const message = await whatsAppAdapter.parseIncomingMessage(req.body);
     const response = await chatEngine.processMessage(message.userId, message.content);
-    console.log("chat response:", response)
-
-    whatsAppAdapter.sendTextMessage(message.userId, response);
+    if (response) {
+      whatsAppAdapter.sendTextMessage(message.userId, response);
+    }
     res.status(200).send('OK');
   } catch (error) {
     ErrorHandler.handle(error as Error, res);

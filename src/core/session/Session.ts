@@ -33,7 +33,7 @@ export class Session {
     this._currentState = newState;
   }
 
-  nextState(stateName?: string): StateName {
+  nextState(stateName?: StateName): StateName {
     let nextStateName: StateName;
 
     switch (stateName) {
@@ -72,6 +72,7 @@ export class Session {
   // Optional: Add custom validation logic
   private isValidTransition(newState: StateName): boolean {
     const validTransitions: Record<StateName, StateName[]> = {
+      NEW: ['GREETING'],
       GREETING: ['PARSE_REQUEST'],
       PARSE_REQUEST: ['COLLECT_DATA', 'SEARCH'],
       COLLECT_DATA: ['SEARCH'],
@@ -79,6 +80,8 @@ export class Session {
       CONFIRMATION: ['GREETING'],
       NO_REPLACEMENT: ['GREETING'],
       ERROR_CREATE_REQUEST: ['GREETING'],
+      COMMENT: ['GREETING'],
+      UNPLEASANT: ['GREETING']
     };
 
     return validTransitions[this._currentState]?.includes(newState) ?? false;

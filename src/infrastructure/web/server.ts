@@ -3,11 +3,11 @@ import express from 'express';
 import { container } from 'tsyringe';
 import config from '../../config';
 import logger from '../shared/logger';
-import { RedisSessionRepository } from '../../data/repositories/RedisSessionRepository';
 import { ErrorHandler } from '../shared/ErrorHandler';
-import { StateFactory } from "../../core/states/StateFactory";
 import { ChatEngine } from "../../core/engine/ChatEngine";
-import { RubyOnRailsBackend } from "../../services/backends/RubyOnRailsBackend";
+import { BackendSessionRepository } from "../../data/repositories/BackendSessionRepository";
+// import { RedisSessionRepository } from '../../data/repositories/RedisSessionRepository';
+// import { RubyOnRailsBackend } from "../../services/backends/RubyOnRailsBackend";
 
 export async function createServer() {
   const app = express();
@@ -34,15 +34,22 @@ export async function createServer() {
   // ======================
   //  Dependency Injection
   // ======================
-  const redisClient = new RedisSessionRepository({
-    host: config.redis.host,
-    port: config.redis.port,
-    password: config.redis.password,
+  // const redisClient = new RedisSessionRepository({
+  //   host: config.redis.host,
+  //   port: config.redis.port,
+  //   password: config.redis.password,
+  // });
+  // container.register('ISessionRepository', {
+  //   useValue: redisClient,
+  // });
+
+  const backendClient = new BackendSessionRepository({
+    url: config.backend.url,
+  });
+  container.register('ISessionRepository', {
+    useValue: backendClient,
   });
 
-  container.register('ISessionRepository', {
-    useValue: redisClient,
-  });
   container.register('stateDependencies', {
     useValue: {
       messageParser: {},
@@ -50,15 +57,7 @@ export async function createServer() {
     },
   });
 
-  container.register('stateFactory', { useClass: StateFactory });
   container.register('chatEngine', { useClass: ChatEngine });
-
-  const backendClient = new RubyOnRailsBackend({
-    url: config.backend.url,
-  });
-  container.register('IBackendRepository', {
-    useValue: backendClient
-  });
 
   // ======================
   //  Route Registration
@@ -88,7 +87,7 @@ export async function createServer() {
   process.on('SIGTERM', () => {
     logger.info('SIGTERM received: closing server');
     server.close(async () => {
-      await redisClient.disconnect();
+      // await redisClient.disconnect();
       process.exit(0);
     });
   });

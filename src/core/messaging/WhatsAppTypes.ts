@@ -52,12 +52,14 @@ export interface AudioMessage {
 }
 
 export interface RequestPayload {
-  message: StateName;
+  state: StateName;
+  pending_data?: string[];
   request?: {
-    replacement?: string;
-    brand?: string;
-    model?: string;
-    year?: string;
-    image?: string;
+    part_name?: string;
+    part_brand?: string;
+    part_model?: string;
+    part_year?: string;
+    part_image?: string;
+    part_chassis?: string;
   }
 }
