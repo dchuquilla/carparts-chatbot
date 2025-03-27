@@ -5,6 +5,18 @@ import { type RequestPayload } from "../messaging/WhatsAppTypes";
 import { Session } from "../session/Session";
 import { StateName } from "../states/StateTypes";
 
+const greetingMessage = `👋 ¡Hola! Bienvenido a [QuienTiene.com](https://QuienTiene.com).
+🛠️ *El repuesto ideal sin complicaciones.*`;
+
+const instructionsMessage = `Para ayudarte mejor, envía tu solicitud *en un solo mensaje* con:
+🔹 *Tipo de repuesto* (Ejemplo: retrovisor, batería, etc.)
+🔹 *Marca y modelo* del vehículo (Ejemplo: Great Wall Wingle Steed)
+🔹 *Año* del vehículo
+
+📸 *Opcional:* Puedes adjuntar una *foto del repuesto* o enviar un *mensaje de voz* describiéndolo.
+
+🚀 ¡Tu solicitud será enviada rápidamente a los proveedores de repuestos!`;
+
 @injectable()
 export class ChatEngine {
   constructor(
@@ -15,13 +27,13 @@ export class ChatEngine {
     console.log('Processing message:', messagePayload);
     try {
       let session = await this.sessionRepo.getSession(userId, messagePayload);
-      const defaultMessage = "Lo siento, parece que no puedo ayudarte con eso.\n🔎 ¿Qué repuesto necesitas para tu auto?\n🚘 Debes incluir Marca, Modelo y Año";
-      const greetingMessage = "💁‍♂️ ¡Hola! Bienvenido a QuienTiene.com.\n\n*El repuesto ideal sin complicaciones.*\n\n🔎 ¿Qué repuesto necesitas para tu auto?\n🚘 Debes incluir Marca, Modelo y Año\n🗣️ Puedes enviar un mensaje de voz.";
+      const defaultMessage = "Lo siento, parece que no puedo ayudarte con eso.\n\n" + instructionsMessage;
+
       console.log('Session Backend:', session);
       switch (messagePayload.state) {
         case 'GREETING':
           if (session.currentState === 'NEW') {
-            return greetingMessage;
+            return greetingMessage + '\n\n' + instructionsMessage;
           } else {
             if (session.data.pending_data) {
               return `Tu búsqueda de *${session.data.part_name}* está en proceso.\nPuedes agregar información para mejorar los resultados.\nTienes que enviar los siguientes datos:\n*${session.data.pending_data.join('\n')}*.`;
