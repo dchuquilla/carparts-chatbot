@@ -48,21 +48,27 @@ export class ChatEngine {
             }
           }
         case 'PARSE_REQUEST':
-          session = await this.sessionRepo.createSession(session.userId, messagePayload);
-          return ``;
+          if (session.currentState === 'NEW') {
+            session = await this.sessionRepo.createSession(session.userId, messagePayload);
+            return ``;
+          } else {
+            return `Tienes una solicitud pendiente. Por favor espera a que un proveedor te contacte.`;
+          }
         case 'COLLECT_DATA':
           await this.sessionRepo.updateSession(session, messagePayload);
           return "";
-          break;
         case 'COMMENT':
           return "Su comentartio será revisado por un moderador";
-          break;
         case 'UNPLEASANT':
           return "Su comentario ha sido marcado como inapropiado, corre el riesgo de ser bloqueado";
-          break;
         case 'NO_REPLACEMENT':
-          return defaultMessage;
-          break;
+          if (session.currentState === 'NEW') {
+            return defaultMessage;
+          } else if (session.data.pending_data.length > 0) {
+            return pendingDateMessage(session);
+          } else {
+            return `Tu mensaje no contiene una solicitud válida.\n\n` + instructionsMessage;
+          }
       }
 
       // await this.sessionRepo.updateSession(session);
