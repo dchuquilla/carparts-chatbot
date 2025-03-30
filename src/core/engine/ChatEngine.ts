@@ -17,6 +17,12 @@ const instructionsMessage = `Para ayudarte mejor, envía tu solicitud *en un sol
 
 🚀 ¡Tu solicitud será enviada rápidamente a los proveedores de repuestos!`;
 
+const pendingDateMessage = (session: Session) => `Tu búsqueda de *${session.data.part_name.toUpperCase()}* está en proceso. Para mejorar los resultados, envía:
+
+🔹 *${session.data.pending_data.join('*\n🔹 *')}*.
+`;
+
+
 @injectable()
 export class ChatEngine {
   constructor(
@@ -35,10 +41,10 @@ export class ChatEngine {
           if (session.currentState === 'NEW') {
             return greetingMessage + '\n\n' + instructionsMessage;
           } else {
-            if (session.data.pending_data) {
-              return `Tu búsqueda de *${session.data.part_name}* está en proceso.\nPuedes agregar información para mejorar los resultados.\nTienes que enviar los siguientes datos:\n*${session.data.pending_data.join('\n')}*.`;
+            if (session.data.pending_data.length > 0) {
+              return pendingDateMessage(session);
             } else {
-              return `Tu búsqueda de ${session.data.part_name} está en proceso. ¿En qué más puedo ayudarte?`;
+              return `Tu búsqueda de *${session.data.part_name.toUpperCase()}* está en proceso. Nuestra red de proveedores está trabajando para enviarte propuestas.`;
             }
           }
         case 'PARSE_REQUEST':
