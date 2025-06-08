@@ -18,6 +18,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChatEngine = void 0;
 const logger_1 = __importDefault(require("../../infrastructure/shared/logger"));
 const tsyringe_1 = require("tsyringe");
+const greetingMessage = `👋 ¡Hola! Bienvenido a [QuienTiene.com](https://QuienTiene.com).
+🛠️ *El repuesto ideal sin complicaciones.*`;
+const instructionsMessage = `Para ayudarte mejor, envía tu solicitud *en un solo mensaje* con:
+🔹 *Tipo de repuesto* (Ejemplo: retrovisor, batería, etc.)
+🔹 *Marca y modelo* del vehículo (Ejemplo: Great Wall Wingle Steed)
+🔹 *Año* del vehículo
+
+📸 *Opcional:* Puedes adjuntar una *foto del repuesto* o enviar un *mensaje de voz* describiéndolo.
+
+🚀 ¡Tu solicitud será enviada rápidamente a los proveedores de repuestos!`;
+const pendingDateMessage = (session) => `Tu búsqueda de *${session.data.part_name.toUpperCase()}* está en proceso. Para mejorar los resultados, envía:
+
+🔹 *${session.data.pending_data.join('*\n🔹 *')}*.
+`;
 let ChatEngine = class ChatEngine {
     sessionRepo;
     constructor(sessionRepo) {
@@ -27,38 +41,46 @@ let ChatEngine = class ChatEngine {
         console.log('Processing message:', messagePayload);
         try {
             let session = await this.sessionRepo.getSession(userId, messagePayload);
-            const defaultMessage = "Lo siento, parece que no puedo ayudarte con eso.\n🔎 ¿Qué repuesto necesitas para tu auto?\n🚘 Debes incluir Marca, Modelo y Año";
-            const greetingMessage = "💁‍♂️ ¡Hola! Bienvenido a QuienTiene.com.\n\n*El repuesto ideal sin complicaciones.*\n\n🔎 ¿Qué repuesto necesitas para tu auto?\n🚘 Debes incluir Marca, Modelo y Año\n🗣️ Puedes enviar un mensaje de voz.";
+            const defaultMessage = "Lo siento, parece que no puedo ayudarte con eso.\n\n" + instructionsMessage;
             console.log('Session Backend:', session);
             switch (messagePayload.state) {
                 case 'GREETING':
                     if (session.currentState === 'NEW') {
-                        return greetingMessage;
+                        return greetingMessage + '\n\n' + instructionsMessage;
                     }
                     else {
-                        if (session.data.pending_data) {
-                            return `Tu búsqueda de *${session.data.part_name}* está en proceso.\nPuedes agregar información para mejorar los resultados.\nTienes que enviar los siguientes datos:\n*${session.data.pending_data.join('\n')}*.`;
+                        if (session.data.pending_data.length > 0) {
+                            return pendingDateMessage(session);
                         }
                         else {
-                            return `Tu búsqueda de ${session.data.part_name} está en proceso. ¿En qué más puedo ayudarte?`;
+                            return `Tu búsqueda de *${session.data.part_name.toUpperCase()}* está en proceso. Nuestra red de proveedores está trabajando para enviarte propuestas.`;
                         }
                     }
                 case 'PARSE_REQUEST':
-                    session = await this.sessionRepo.createSession(session.userId, messagePayload);
-                    return ``;
+                    if (session.currentState === 'NEW') {
+                        session = await this.sessionRepo.createSession(session.userId, messagePayload);
+                        return ``;
+                    }
+                    else {
+                        return `Tienes una solicitud pendiente. Por favor espera a que un proveedor te contacte.`;
+                    }
                 case 'COLLECT_DATA':
                     await this.sessionRepo.updateSession(session, messagePayload);
                     return "";
-                    break;
                 case 'COMMENT':
                     return "Su comentartio será revisado por un moderador";
-                    break;
                 case 'UNPLEASANT':
                     return "Su comentario ha sido marcado como inapropiado, corre el riesgo de ser bloqueado";
-                    break;
                 case 'NO_REPLACEMENT':
-                    return defaultMessage;
-                    break;
+                    if (session.currentState === 'NEW') {
+                        return defaultMessage;
+                    }
+                    else if (session.data.pending_data.length > 0) {
+                        return pendingDateMessage(session);
+                    }
+                    else {
+                        return `Tu mensaje no contiene una solicitud válida.\n\n` + instructionsMessage;
+                    }
             }
             // await this.sessionRepo.updateSession(session);
             return defaultMessage;
