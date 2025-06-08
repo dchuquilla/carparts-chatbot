@@ -63,4 +63,15 @@ router.post('/webhook/requests/notify', async (req, res) => {
         ErrorHandler_1.ErrorHandler.handle(error, res);
     }
 });
+router.post('/webhook/stores/notify', async (req, res) => {
+    try {
+        console.log("Request body:", req.body);
+        const store = req.body;
+        whatsAppAdapter.sendTextMessage(store.userId, store.message);
+        res.status(200).send('OK');
+    }
+    catch (error) {
+        ErrorHandler_1.ErrorHandler.handle(error, res);
+    }
+});
 exports.default = router;

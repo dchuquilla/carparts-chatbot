@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import logger from "../../shared/logger";
 import { container } from 'tsyringe';
 import { WhatsAppAdapter } from '../../messaging/WhatsAppAdapter';
 import { ChatEngine } from '../../../core/engine/ChatEngine';
@@ -56,10 +57,22 @@ router.post('/webhook/whatsapp/messages', messageRateLimiter, async (req, res) =
 
 router.post('/webhook/requests/notify', async (req, res) => {
   try {
-    console.log("Request body:", req.body);
+    logger.info("Request body:", req.body);
     const carRequest = req.body;
 
     whatsAppAdapter.sendTextMessage(carRequest.userId, carRequest.message);
+    res.status(200).send('OK');
+  } catch (error) {
+    ErrorHandler.handle(error as Error, res);
+  }
+});
+
+router.post('/webhook/stores/notify', async (req, res) => {
+  try {
+    logger.info("Request body:", req.body);
+    const store = req.body;
+
+    await whatsAppAdapter.sendTextMessage(store.userId, store.message);
     res.status(200).send('OK');
   } catch (error) {
     ErrorHandler.handle(error as Error, res);
