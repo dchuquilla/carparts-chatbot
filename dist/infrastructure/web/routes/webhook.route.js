@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
+const logger_1 = __importDefault(require("../../shared/logger"));
 const tsyringe_1 = require("tsyringe");
 const WhatsAppAdapter_1 = require("../../messaging/WhatsAppAdapter");
 const ChatEngine_1 = require("../../../core/engine/ChatEngine");
@@ -39,6 +40,7 @@ router.post('/webhook/whatsapp/messages', messageRateLimiter, async (req, res) =
             return res.status(200).send('OK');
         }
         if (!["593992513609"].includes(req.body.messages[0].from)) {
+            logger_1.default.warn(`Received message from unauthorized user: ${req.body.messages[0].from}`);
             return res.status(200).send('OK');
         }
         const message = await whatsAppAdapter.parseIncomingMessage(req.body);
@@ -54,7 +56,7 @@ router.post('/webhook/whatsapp/messages', messageRateLimiter, async (req, res) =
 });
 router.post('/webhook/requests/notify', async (req, res) => {
     try {
-        console.log("Request body:", req.body);
+        logger_1.default.info("Request body:", req.body);
         const carRequest = req.body;
         whatsAppAdapter.sendTextMessage(carRequest.userId, carRequest.message);
         res.status(200).send('OK');
@@ -65,9 +67,9 @@ router.post('/webhook/requests/notify', async (req, res) => {
 });
 router.post('/webhook/stores/notify', async (req, res) => {
     try {
-        console.log("Request body:", req.body);
+        logger_1.default.info("Request body:", req.body);
         const store = req.body;
-        whatsAppAdapter.sendTextMessage(store.userId, store.message);
+        await whatsAppAdapter.sendTextMessage(store.userId, store.message);
         res.status(200).send('OK');
     }
     catch (error) {

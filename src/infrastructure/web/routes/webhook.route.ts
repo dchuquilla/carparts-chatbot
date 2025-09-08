@@ -41,6 +41,7 @@ router.post('/webhook/whatsapp/messages', messageRateLimiter, async (req, res) =
     }
 
     if (!["593992513609"].includes(req.body.messages[0].from)) {
+      logger.warn(`Received message from unauthorized user: ${req.body.messages[0].from}`);
       return res.status(200).send('OK');
     }
 
