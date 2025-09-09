@@ -74,7 +74,7 @@ class EnvironmentVariables {
     // Security
     SESSION_SECRET = 'your-secret-key-here';
     // Backend
-    BACKEND_URL = 'http://localhost:3000';
+    BACKEND_URL = 'https://dev-api.quientiene.com';
 }
 __decorate([
     (0, class_validator_1.IsNumber)(),

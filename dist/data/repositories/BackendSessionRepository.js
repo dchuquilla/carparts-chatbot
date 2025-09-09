@@ -14,12 +14,14 @@ class BackendSessionRepository {
     }
     async getSession(userId) {
         try {
-            const backendRequestResponse = await axios_1.default.get(`${this.url}/api/v1/requests?q[user_phone_eq]=${userId}`);
-            if (backendRequestResponse.data.length === 0) {
+            console.log('Fetching session for user:', `${this.url}/api/v1/requests/filter?q[user_phone_eq]=${userId}`);
+            const backendRequestResponse = await axios_1.default.get(`${this.url}/api/v1/requests/filter?q[user_phone_eq]=${userId}`);
+            if (backendRequestResponse.data["requests"].length === 0) {
                 return new Session_1.Session(userId, 'NEW', {}, new Date());
             }
             // A request was found, return a new session with request data
-            return new Session_1.Session(userId, backendRequestResponse.data[0].state, backendRequestResponse.data[0], new Date());
+            console.log('******** Found existing session:', backendRequestResponse.data["requests"]);
+            return new Session_1.Session(userId, 'PARSE_REQUEST', backendRequestResponse.data["requests"][0], new Date());
         }
         catch (error) {
             logger_1.default.error('Failed to get session:', error);

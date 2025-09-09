@@ -14,6 +14,7 @@ const openAIService = tsyringe_1.container.resolve(OpenAIService_1.OpenAIService
 class WhatsAppAdapter {
     // Parse incoming WhatsApp webhook payload
     async parseIncomingMessage(body) {
+        console.log('Received WhatsApp webhook payload:', JSON.stringify(body, null, 2));
         try {
             const message = body?.messages?.[0];
             const enabledTypes = ['text', 'audio', 'voice', 'image'];
@@ -90,7 +91,10 @@ class WhatsAppAdapter {
         switch (this.getMessageType(message)) {
             case WhatsAppTypes_1.MessageType.TEXT:
                 return openAIService.parseMessage(message.text.body);
-            case WhatsAppTypes_1.MessageType.AUDIO || WhatsAppTypes_1.MessageType.VOICE:
+            case WhatsAppTypes_1.MessageType.AUDIO:
+                textTranscription = await openAIService.transcribeAudio(message.audio);
+                return openAIService.parseMessage(textTranscription);
+            case WhatsAppTypes_1.MessageType.VOICE:
                 textTranscription = await openAIService.transcribeAudio(message.voice);
                 return openAIService.parseMessage(textTranscription);
             case WhatsAppTypes_1.MessageType.IMAGE:

@@ -10,6 +10,7 @@ const openAIService = container.resolve(OpenAIService);
 export class WhatsAppAdapter {
   // Parse incoming WhatsApp webhook payload
   async parseIncomingMessage(body: any): Promise<IncomingMessage> {
+    console.log('Received WhatsApp webhook payload:', JSON.stringify(body, null, 2));
     try {
       const message = body?.messages?.[0];
       const enabledTypes = ['text', 'audio', 'voice', 'image'];
@@ -89,9 +90,12 @@ export class WhatsAppAdapter {
     switch (this.getMessageType(message)) {
       case MessageType.TEXT:
         return openAIService.parseMessage(message.text.body);
-      case MessageType.AUDIO || MessageType.VOICE:
-        textTranscription = await openAIService.transcribeAudio(message.voice);
+      case MessageType.AUDIO:
+        textTranscription = await openAIService.transcribeAudio(message.audio);
         return openAIService.parseMessage(textTranscription);
+      case MessageType.VOICE:
+        textTranscription = await openAIService.transcribeAudio(message.voice);
+        return openAIService.parseMessage(textTranscription);   
       case MessageType.IMAGE:
         return { state: 'COLLECT_DATA', request: { part_image: message.image.link } };
       default:

@@ -64,7 +64,7 @@ class EnvironmentVariables {
 
   // Backend
   @IsString()
-  BACKEND_URL: string = 'http://localhost:3000';
+  BACKEND_URL: string = 'https://dev-api.quientiene.com';
 }
 
 export const validateEnvironment = () => {

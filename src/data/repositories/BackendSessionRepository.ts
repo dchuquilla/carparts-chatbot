@@ -17,9 +17,10 @@ export class BackendSessionRepository implements ISessionRepository {
 
   async getSession(userId: string): Promise<Session> {
     try {
-      const backendRequestResponse = await axios.get(`${this.url}/api/v1/requests?q[user_phone_eq]=${userId}`);
+      console.log('Fetching session for user:', `${this.url}/api/v1/requests/filter?q[user_phone_eq]=${userId}`);
+      const backendRequestResponse = await axios.get(`${this.url}/api/v1/requests/filter?q[user_phone_eq]=${userId}`);
 
-      if (backendRequestResponse.data.length === 0) {
+      if (backendRequestResponse.data["requests"].length === 0) {
         return new Session(
           userId,
           'NEW',
@@ -29,10 +30,11 @@ export class BackendSessionRepository implements ISessionRepository {
       }
 
       // A request was found, return a new session with request data
+      console.log('******** Found existing session:', backendRequestResponse.data["requests"]);
       return new Session(
         userId,
-        backendRequestResponse.data[0].state,
-        backendRequestResponse.data[0],
+        'PARSE_REQUEST',
+        backendRequestResponse.data["requests"][0],
         new Date(),
       );
 
