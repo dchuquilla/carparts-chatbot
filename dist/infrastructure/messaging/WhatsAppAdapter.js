@@ -47,25 +47,55 @@ class WhatsAppAdapter {
             content: { body: text }
         });
     }
+    // Send contact message to user
+    async sendContactMessage(userId, contact) {
+        await this.sendMessage({
+            userId,
+            type: WhatsAppTypes_1.MessageType.CONTACT,
+            content: { body: contact }
+        });
+    }
     // Generic message sender
     async sendMessage(message) {
         if (!message.userId || !message.type || !message.content) {
             throw new Error('Invalid message object');
         }
         try {
-            const whapiOptions = {
-                method: 'POST',
-                headers: {
-                    accept: 'application/json',
-                    'content-type': 'application/json',
-                    authorization: `Bearer ${config_1.default.whatsapp.apiKey}`
-                },
-                body: JSON.stringify({
-                    to: `${message.userId}@s.whatsapp.net`,
-                    body: message.content.body
-                })
-            };
-            fetch('https://gate.whapi.cloud/messages/text', whapiOptions)
+            let whapiOptions = {};
+            switch (message.type) {
+                case WhatsAppTypes_1.MessageType.TEXT:
+                    whapiOptions = {
+                        method: 'POST',
+                        headers: {
+                            accept: 'application/json',
+                            'content-type': 'application/json',
+                            authorization: `Bearer ${config_1.default.whatsapp.apiKey}`
+                        },
+                        body: JSON.stringify({
+                            to: `${message.userId}@s.whatsapp.net`,
+                            body: message.content.body
+                        })
+                    };
+                    break;
+                case WhatsAppTypes_1.MessageType.CONTACT:
+                    whapiOptions = {
+                        method: 'POST',
+                        headers: {
+                            accept: 'application/json',
+                            'content-type': 'application/json',
+                            authorization: `Bearer ${config_1.default.whatsapp.apiKey}`
+                        },
+                        body: JSON.stringify({
+                            to: `${message.userId}@s.whatsapp.net`,
+                            vcard: message.content.body,
+                            name: 'Contacto'
+                        })
+                    };
+                    break;
+                default:
+                    break;
+            }
+            fetch(`https://gate.whapi.cloud/messages/${message.type}`, whapiOptions)
                 .then(res => res.json())
                 .then(res => console.log(res))
                 .catch(err => console.error(err));

@@ -9,4 +9,5 @@ var MessageType;
     MessageType["TEMPLATE"] = "template";
     MessageType["IMAGE"] = "image";
     MessageType["UNKNOWN"] = "unknown";
+    MessageType["CONTACT"] = "contact";
 })(MessageType || (exports.MessageType = MessageType = {}));

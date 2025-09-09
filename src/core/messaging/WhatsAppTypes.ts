@@ -6,7 +6,8 @@ export enum MessageType {
   VOICE = 'voice',
   TEMPLATE = 'template',
   IMAGE = 'image',
-  UNKNOWN = 'unknown'
+  UNKNOWN = 'unknown',
+  CONTACT = 'contact'
 }
 
 export interface IncomingMessage {

@@ -80,4 +80,16 @@ router.post('/webhook/stores/notify', async (req, res) => {
   }
 });
 
+router.post('/webhook/contact/notify', async (req, res) => {
+  try {
+    logger.info("Request body:", req.body);
+    const request = req.body;
+
+    await whatsAppAdapter.sendContactMessage(request.userId, request.message);
+    res.status(200).send('OK');
+  } catch (error) {
+    ErrorHandler.handle(error as Error, res);
+  }
+});
+
 export default router;

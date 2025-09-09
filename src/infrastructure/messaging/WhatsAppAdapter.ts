@@ -47,6 +47,15 @@ export class WhatsAppAdapter {
     });
   }
 
+  // Send contact message to user
+  async sendContactMessage(userId: string, contact: string): Promise<void> {
+    await this.sendMessage({
+      userId,
+      type: MessageType.CONTACT,
+      content: { body: contact }
+    });
+  }
+
   // Generic message sender
   private async sendMessage(message: OutgoingMessage): Promise<void> {
     if (!message.userId || !message.type || !message.content) {
@@ -54,20 +63,44 @@ export class WhatsAppAdapter {
     }
 
     try {
-      const whapiOptions = {
-        method: 'POST',
-        headers: {
-          accept: 'application/json',
-          'content-type': 'application/json',
-          authorization: `Bearer ${config.whatsapp.apiKey}`
-        },
-        body: JSON.stringify({
-          to: `${message.userId}@s.whatsapp.net`,
-          body: message.content.body
-        })
-      };
+      let whapiOptions = {};
+      switch (message.type) {
+        case MessageType.TEXT:
+          whapiOptions = {
+            method: 'POST',
+            headers: {
+              accept: 'application/json',
+              'content-type': 'application/json',
+              authorization: `Bearer ${config.whatsapp.apiKey}`
+            },
+            body: JSON.stringify({
+              to: `${message.userId}@s.whatsapp.net`,
+              body: message.content.body
+            })
+          };
+          break;
 
-      fetch('https://gate.whapi.cloud/messages/text', whapiOptions)
+        case MessageType.CONTACT:
+          whapiOptions = {
+            method: 'POST',
+            headers: {
+              accept: 'application/json',
+              'content-type': 'application/json',
+              authorization: `Bearer ${config.whatsapp.apiKey}`
+            },
+            body: JSON.stringify({
+              to: `${message.userId}@s.whatsapp.net`,
+              vcard: message.content.body,
+              name: 'Contacto'
+            })
+          };
+          break;
+      
+        default:
+          break;
+      }
+
+      fetch(`https://gate.whapi.cloud/messages/${message.type}`, whapiOptions)
         .then(res => res.json())
         .then(res => console.log(res))
         .catch(err => console.error(err));
@@ -76,6 +109,7 @@ export class WhatsAppAdapter {
       throw new ErrorHandler().createError('MESSAGE_SEND_FAILED');
     }
   }
+
 
   private getMessageType(message: any): MessageType {
     if (message.text) return MessageType.TEXT;
