@@ -98,7 +98,6 @@ async function createServer() {
         logger_1.default.info(`
       🚀 Server running in ${config_1.default.app.env} mode
       ➤ Listening on port ${config_1.default.app.port}
-      ➤ PostgreSQL connected to ${config_1.default.database.url}
     `);
     });
     // Graceful shutdown

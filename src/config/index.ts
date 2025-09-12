@@ -13,32 +13,6 @@ class EnvironmentVariables {
   @IsString()
   NODE_ENV: string = 'development';
 
-  // Database (PostgreSQL)
-  @IsString()
-  DB_HOST!: string;
-
-  @IsNumber()
-  DB_PORT: number = 5432;
-
-  @IsString()
-  DB_USERNAME!: string;
-
-  @IsString()
-  DB_PASSWORD!: string;
-
-  @IsString()
-  DB_NAME: string = 'carparts';
-
-  // Redis
-  @IsString()
-  REDIS_HOST: string = 'localhost';
-
-  @IsNumber()
-  REDIS_PORT: number = 6379;
-
-  @IsString()
-  REDIS_PASSWORD: string = '';
-
   // WhatsApp
   @IsString()
   WHATSAPP_API_KEY!: string;
@@ -69,14 +43,9 @@ class EnvironmentVariables {
 
 export const validateEnvironment = () => {
   const requiredVars = [
-    'DB_HOST',
-    'DB_USERNAME',
-    'DB_PASSWORD',
     'WHATSAPP_API_KEY',
     'DEEPSEEK_API_KEY',
     'OPENAI_API_KEY',
-    'REDIS_HOST',
-    'REDIS_PORT',
     'NODE_ENV',
     'BACKEND_URL'
   ];
@@ -115,16 +84,6 @@ export default {
     port: config.APP_PORT,
     env: config.NODE_ENV,
     isProduction: config.NODE_ENV === 'production',
-  },
-
-  // Database
-  database: {
-    host: config.DB_HOST,
-    port: config.DB_PORT,
-    username: config.DB_USERNAME,
-    password: config.DB_PASSWORD,
-    name: config.DB_NAME,
-    url: `postgres://${config.DB_USERNAME}:${config.DB_PASSWORD}@${config.DB_HOST}:${config.DB_PORT}/${config.DB_NAME}`,
   },
 
   // WhatsApp

@@ -18,12 +18,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChatEngine = void 0;
 const logger_1 = __importDefault(require("../../infrastructure/shared/logger"));
 const tsyringe_1 = require("tsyringe");
-const greetingMessage = `👋 ¡Hola! Bienvenido a [QuienTiene.com](https://QuienTiene.com).
+const greetingMessage = `👋 ¡Hola! Bienvenido a QuienTiene.com.
 🛠️ *El repuesto ideal sin complicaciones.*`;
 const instructionsMessage = `Para ayudarte mejor, envía tu solicitud *en un solo mensaje* con:
-🔹 *Tipo de repuesto* (Ejemplo: retrovisor, batería, etc.)
-🔹 *Marca y modelo* del vehículo (Ejemplo: Great Wall Wingle Steed)
+🔹 *Tipo de repuesto*
+🔹 *Marca y modelo* del vehículo
 🔹 *Año* del vehículo
+
+💡 EJEMPLO: Amortiguador para Toyota Corolla 2015
 
 📸 *Opcional:* Puedes adjuntar una *foto del repuesto* o enviar un *mensaje de voz* describiéndolo.
 
@@ -49,7 +51,8 @@ let ChatEngine = class ChatEngine {
                         return greetingMessage + '\n\n' + instructionsMessage;
                     }
                     else {
-                        if (session.data.pending_data.length > 0) {
+                        console.log('***** Existing session, skipping greeting.', session.data);
+                        if (session.data.length > 0) {
                             return pendingDateMessage(session);
                         }
                         else {

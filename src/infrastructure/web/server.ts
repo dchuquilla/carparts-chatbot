@@ -70,7 +70,6 @@ export async function createServer() {
     logger.info(`
       🚀 Server running in ${config.app.env} mode
       ➤ Listening on port ${config.app.port}
-      ➤ PostgreSQL connected to ${config.database.url}
     `);
   });
 

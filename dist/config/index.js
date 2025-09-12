@@ -52,16 +52,6 @@ class EnvironmentVariables {
     // App Configuration
     APP_PORT = 3000;
     NODE_ENV = 'development';
-    // Database (PostgreSQL)
-    DB_HOST;
-    DB_PORT = 5432;
-    DB_USERNAME;
-    DB_PASSWORD;
-    DB_NAME = 'carparts';
-    // Redis
-    REDIS_HOST = 'localhost';
-    REDIS_PORT = 6379;
-    REDIS_PASSWORD = '';
     // WhatsApp
     WHATSAPP_API_KEY;
     // DeepSeek API
@@ -84,38 +74,6 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], EnvironmentVariables.prototype, "NODE_ENV", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], EnvironmentVariables.prototype, "DB_HOST", void 0);
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], EnvironmentVariables.prototype, "DB_PORT", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], EnvironmentVariables.prototype, "DB_USERNAME", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], EnvironmentVariables.prototype, "DB_PASSWORD", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], EnvironmentVariables.prototype, "DB_NAME", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], EnvironmentVariables.prototype, "REDIS_HOST", void 0);
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], EnvironmentVariables.prototype, "REDIS_PORT", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], EnvironmentVariables.prototype, "REDIS_PASSWORD", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
@@ -146,14 +104,9 @@ __decorate([
 ], EnvironmentVariables.prototype, "BACKEND_URL", void 0);
 const validateEnvironment = () => {
     const requiredVars = [
-        'DB_HOST',
-        'DB_USERNAME',
-        'DB_PASSWORD',
         'WHATSAPP_API_KEY',
         'DEEPSEEK_API_KEY',
         'OPENAI_API_KEY',
-        'REDIS_HOST',
-        'REDIS_PORT',
         'NODE_ENV',
         'BACKEND_URL'
     ];
@@ -183,15 +136,6 @@ exports.default = {
         port: config.APP_PORT,
         env: config.NODE_ENV,
         isProduction: config.NODE_ENV === 'production',
-    },
-    // Database
-    database: {
-        host: config.DB_HOST,
-        port: config.DB_PORT,
-        username: config.DB_USERNAME,
-        password: config.DB_PASSWORD,
-        name: config.DB_NAME,
-        url: `postgres://${config.DB_USERNAME}:${config.DB_PASSWORD}@${config.DB_HOST}:${config.DB_PORT}/${config.DB_NAME}`,
     },
     // WhatsApp
     whatsapp: {
