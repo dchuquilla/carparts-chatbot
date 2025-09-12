@@ -18,6 +18,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChatEngine = void 0;
 const logger_1 = __importDefault(require("../../infrastructure/shared/logger"));
 const tsyringe_1 = require("tsyringe");
+const config_1 = __importDefault(require("../../config"));
 const greetingMessage = `👋 ¡Hola! Bienvenido a QuienTiene.com.
 🛠️ *El repuesto ideal sin complicaciones.*`;
 const instructionsMessage = `Para ayudarte mejor, envía tu solicitud *en un solo mensaje* con:
@@ -56,7 +57,7 @@ let ChatEngine = class ChatEngine {
                             return pendingDateMessage(session);
                         }
                         else {
-                            return `Tu búsqueda de *${session.data.part_name.toUpperCase()}* está en proceso. Nuestra red de proveedores está trabajando para enviarte propuestas.`;
+                            return `Tu búsqueda de *${session.data.part_name.toUpperCase()}* está en proceso. Nuestra red de proveedores está trabajando para enviarte propuestas.\n\n${config_1.default.web.url}/requests/${session.data.show_key}`;
                         }
                     }
                 case 'PARSE_REQUEST':
@@ -65,7 +66,7 @@ let ChatEngine = class ChatEngine {
                         return ``;
                     }
                     else {
-                        return `Tienes una solicitud pendiente. Por favor espera a que un proveedor te contacte.`;
+                        return `Tienes una solicitud pendiente. Por favor espera a que un proveedor te contacte.\n\n${config_1.default.web.url}/requests/${session.data.show_key}`;
                     }
                 case 'COLLECT_DATA':
                     await this.sessionRepo.updateSession(session, messagePayload);

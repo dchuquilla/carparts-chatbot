@@ -39,6 +39,10 @@ class EnvironmentVariables {
   // Backend
   @IsString()
   BACKEND_URL: string = 'https://dev-api.quientiene.com';
+
+  // Web
+  @IsString()
+  WEB_URL: string = 'https://dev-webs.quientiene.com';
 }
 
 export const validateEnvironment = () => {
@@ -47,7 +51,8 @@ export const validateEnvironment = () => {
     'DEEPSEEK_API_KEY',
     'OPENAI_API_KEY',
     'NODE_ENV',
-    'BACKEND_URL'
+    'BACKEND_URL',
+    'WEB_URL'
   ];
 
   const missingVars = requiredVars.filter((varName) => !process.env[varName]);
@@ -115,5 +120,10 @@ export default {
   // Backend
   backend: {
     url: config.BACKEND_URL,
+  },
+
+  // Web
+  web: {
+    url: config.WEB_URL,
   },
 };

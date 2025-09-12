@@ -4,6 +4,7 @@ import { ISessionRepository } from "../session/interfaces/ISessionRepository";
 import { type RequestPayload } from "../messaging/WhatsAppTypes";
 import { Session } from "../session/Session";
 import { StateName } from "../states/StateTypes";
+import config from '../../config';
 
 const greetingMessage = `👋 ¡Hola! Bienvenido a QuienTiene.com.
 🛠️ *El repuesto ideal sin complicaciones.*`;
@@ -47,7 +48,7 @@ export class ChatEngine {
             if (session.data.length > 0) {
               return pendingDateMessage(session);
             } else {
-              return `Tu búsqueda de *${session.data.part_name.toUpperCase()}* está en proceso. Nuestra red de proveedores está trabajando para enviarte propuestas.`;
+              return `Tu búsqueda de *${session.data.part_name.toUpperCase()}* está en proceso. Nuestra red de proveedores está trabajando para enviarte propuestas.\n\n${config.web.url}/requests/${session.data.show_key}`;
             }
           }
         case 'PARSE_REQUEST':
@@ -55,7 +56,7 @@ export class ChatEngine {
             session = await this.sessionRepo.createSession(session.userId, messagePayload);
             return ``;
           } else {
-            return `Tienes una solicitud pendiente. Por favor espera a que un proveedor te contacte.`;
+            return `Tienes una solicitud pendiente. Por favor espera a que un proveedor te contacte.\n\n${config.web.url}/requests/${session.data.show_key}`;
           }
         case 'COLLECT_DATA':
           await this.sessionRepo.updateSession(session, messagePayload);

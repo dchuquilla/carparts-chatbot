@@ -65,6 +65,8 @@ class EnvironmentVariables {
     SESSION_SECRET = 'your-secret-key-here';
     // Backend
     BACKEND_URL = 'https://dev-api.quientiene.com';
+    // Web
+    WEB_URL = 'https://dev-webs.quientiene.com';
 }
 __decorate([
     (0, class_validator_1.IsNumber)(),
@@ -102,13 +104,18 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], EnvironmentVariables.prototype, "BACKEND_URL", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], EnvironmentVariables.prototype, "WEB_URL", void 0);
 const validateEnvironment = () => {
     const requiredVars = [
         'WHATSAPP_API_KEY',
         'DEEPSEEK_API_KEY',
         'OPENAI_API_KEY',
         'NODE_ENV',
-        'BACKEND_URL'
+        'BACKEND_URL',
+        'WEB_URL'
     ];
     const missingVars = requiredVars.filter((varName) => !process.env[varName]);
     if (missingVars.length > 0) {
@@ -161,5 +168,9 @@ exports.default = {
     // Backend
     backend: {
         url: config.BACKEND_URL,
+    },
+    // Web
+    web: {
+        url: config.WEB_URL,
     },
 };
