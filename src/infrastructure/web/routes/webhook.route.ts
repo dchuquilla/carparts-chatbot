@@ -40,10 +40,10 @@ router.post('/webhook/whatsapp/messages', messageRateLimiter, async (req, res) =
       return res.status(200).send('OK');
     }
 
-    if (!["593992513609"].includes(req.body.messages[0].from)) {
-      logger.warn(`Received message from unauthorized user: ${req.body.messages[0].from}`);
-      return res.status(200).send('OK');
-    }
+    // if (!["593992513609"].includes(req.body.messages[0].from)) {
+    //   logger.warn(`Received message from unauthorized user: ${req.body.messages[0].from}`);
+    //   return res.status(200).send('OK');
+    // }
 
     const message = await whatsAppAdapter.parseIncomingMessage(req.body);
     const response = await chatEngine.processMessage(message.userId, message.content);
