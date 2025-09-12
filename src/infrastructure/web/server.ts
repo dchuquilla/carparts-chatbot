@@ -34,14 +34,6 @@ export async function createServer() {
   // ======================
   //  Dependency Injection
   // ======================
-  // const redisClient = new RedisSessionRepository({
-  //   host: config.redis.host,
-  //   port: config.redis.port,
-  //   password: config.redis.password,
-  // });
-  // container.register('ISessionRepository', {
-  //   useValue: redisClient,
-  // });
 
   const backendClient = new BackendSessionRepository({
     url: config.backend.url,
@@ -78,7 +70,6 @@ export async function createServer() {
     logger.info(`
       🚀 Server running in ${config.app.env} mode
       ➤ Listening on port ${config.app.port}
-      ➤ Redis connected to ${config.redis.host}:${config.redis.port}
       ➤ PostgreSQL connected to ${config.database.url}
     `);
   });

@@ -193,13 +193,6 @@ exports.default = {
         name: config.DB_NAME,
         url: `postgres://${config.DB_USERNAME}:${config.DB_PASSWORD}@${config.DB_HOST}:${config.DB_PORT}/${config.DB_NAME}`,
     },
-    // Redis
-    redis: {
-        host: config.REDIS_HOST,
-        port: config.REDIS_PORT,
-        password: config.REDIS_PASSWORD,
-        url: `redis://${config.REDIS_PASSWORD ? `:${config.REDIS_PASSWORD}@` : ''}${config.REDIS_HOST}:${config.REDIS_PORT}`,
-    },
     // WhatsApp
     whatsapp: {
         apiKey: config.WHATSAPP_API_KEY,
