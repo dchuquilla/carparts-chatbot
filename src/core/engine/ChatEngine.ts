@@ -9,7 +9,7 @@ import config from '../../config';
 const greetingMessage = `👋 ¡Hola! Bienvenido a QuienTiene.com.
 🛠️ *El repuesto ideal sin complicaciones.*`;
 
-const instructionsMessage = `Para ayudarte mejor, envía tu solicitud *en un solo mensaje* con:
+const instructionsMessage = `Pide tu solicitud *en un solo mensaje* con:
 🔹 *Tipo de repuesto*
 🔹 *Marca y modelo* del vehículo
 🔹 *Año* del vehículo
