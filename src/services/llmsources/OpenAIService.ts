@@ -18,7 +18,7 @@ export class OpenAIService implements ILLMStrategy {
           messages: [
             { role: "system", content: "Eres un experto en JSON. Por favor crea un objeto JSON siguiendo estas reglas" },
             { role: "system", content: "COMPLEMENTARIO: Cuando el texto sea información adicional con el formato de codigo de 8 caracteeres alfaniméricos para la solicitud de repuesto de auto, responde con {\"state\": \"COLLECT_DATA\",\"request\": { \"part_chassis\": \"string\" }}" },
-            { role: "system", content: "COMENTARIO: Cuando el texto sea un comentario suelto sin relación a solicitar repuestos de auto, responde con {\"state\": \"COMMENT\"}" },
+            { role: "system", content: "COMENTARIO: Cuando el texto sea un comentario insultante sin relación con solicitar repuestos de auto, responde con {\"state\": \"COMMENT\"}" },
             { role: "system", content: "INAPROPIADO: Cuando el texto sea un comentario con contenido sexual, insultante o acosador, responde con {\"state\": \"UNPLEASANT\"}" },
             { role: "system", content: "EXCEPTION: Cuando el texto no sea un saludo, una solicitud de repuesto o un comentario, responde con {\"state\": \"NO_REPLACEMENT\"}" },
             { role: "system", content: "SALUDO: Cuando el texto sea un saludo sin informacion de alguna solicitud, responde con {\"state\": \"GREETING\"}" },
