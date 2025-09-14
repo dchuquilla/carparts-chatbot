@@ -16,11 +16,11 @@ export class OpenAIService implements ILLMStrategy {
         openai.chat.completions.create({
           model: "gpt-3.5-turbo",
           messages: [
-            { role: "system", content: "Eres un experto en JSON. Por favor crea un objeto JSON siguiendo estas reglas" },
+            { role: "system", content: "Eres un experto en JSON, en vehículos de todas las marcas y modelos en la historia. Se enviará el pedido de un repuesto de vehículo; auto, moto, camión, camioneta, etc. Por favor crea un objeto JSON siguiendo estas reglas" },
             { role: "system", content: "COMPLEMENTARIO: Cuando el texto sea información adicional con el formato de codigo de 8 caracteeres alfaniméricos para la solicitud de repuesto de auto, responde con {\"state\": \"COLLECT_DATA\",\"request\": { \"part_chassis\": \"string\" }}" },
             { role: "system", content: "COMENTARIO: Cuando el texto sea un comentario insultante sin relación con solicitar repuestos de auto, responde con {\"state\": \"COMMENT\"}" },
             { role: "system", content: "INAPROPIADO: Cuando el texto sea un comentario con contenido sexual, insultante o acosador, responde con {\"state\": \"UNPLEASANT\"}" },
-            { role: "system", content: "EXCEPTION: Cuando el texto no sea un saludo, una solicitud de repuesto o un comentario, responde con {\"state\": \"NO_REPLACEMENT\"}" },
+            { role: "system", content: "EXCEPTION: Cuando el texto no sea un saludo, una solicitud de repuesto, la solicitud no incluya el nombre del repuesto, marca, modelo y/o año, o sea un comentario, responde con {\"state\": \"NO_REPLACEMENT\"}" },
             { role: "system", content: "SALUDO: Cuando el texto sea un saludo sin informacion de alguna solicitud, responde con {\"state\": \"GREETING\"}" },
             { role: "system", content: "ESTRUCTURA: {\"state\": \"PARSE_REQUEST\",\"request\": { \"part_name\": \"string\", \"part_brand\": \"string\", \"part_model\": \"string\", \"part_year\": \"string\" }}." },
             {
