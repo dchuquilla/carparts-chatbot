@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { Router } from 'express';
 import logger from "../../shared/logger";
 import { container } from 'tsyringe';
@@ -40,9 +41,19 @@ router.post('/webhook/whatsapp/messages', messageRateLimiter, async (req, res) =
       return res.status(200).send('OK');
     }
 
+    // Ignore group messages
+    // TODO: Handle group messages in the future
     if (req.body?.messages[0]?.chat_id.endsWith('@g.us')) {
       return res.status(200).send('OK');
     }
+    // fetch number from stores list and skip if found
+    await axios.get(`${config.backend.url}/api/v1/stores/whatsapp-number/${req.body.messages[0].from}`)
+    .then(response => {
+      if (response.status === 200) {
+        logger.info(`Message from store number ${req.body.messages[0].from}, skipping.`);
+        return res.status(200).send('OK');
+      }
+    });
 
     // if (!["593992513609"].includes(req.body.messages[0].from)) {
     //   logger.warn(`Received message from unauthorized user: ${req.body.messages[0].from}`);
