@@ -53,6 +53,9 @@ router.post('/webhook/whatsapp/messages', messageRateLimiter, async (req, res) =
         logger.info(`Message from store number ${req.body.messages[0].from}, skipping.`);
         return res.status(200).send('OK');
       }
+    })
+    .catch(error => {
+      logger.error(`Error fetching store number ${req.body.messages[0].from}: ${error.message}`);
     });
 
     // if (!["593992513609"].includes(req.body.messages[0].from)) {
