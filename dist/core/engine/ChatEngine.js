@@ -44,7 +44,7 @@ let ChatEngine = class ChatEngine {
         console.log('Processing message:', messagePayload);
         try {
             let session = await this.sessionRepo.getSession(userId, messagePayload);
-            const defaultMessage = "Lo siento, parece que no puedo ayudarte con eso.\n\n" + instructionsMessage;
+            const defaultMessage = "Lo siento, no reconozco un pedido de repuesto en tu mensaje.\n\n" + instructionsMessage;
             console.log('Session Backend:', session);
             switch (messagePayload.state) {
                 case 'GREETING':
@@ -72,9 +72,9 @@ let ChatEngine = class ChatEngine {
                     await this.sessionRepo.updateSession(session, messagePayload);
                     return "";
                 case 'COMMENT':
-                    return "Su comentartio será revisado por un moderador";
+                    return "Su comentario será tomado en cuenta.";
                 case 'UNPLEASANT':
-                    return "Su comentario ha sido marcado como inapropiado, corre el riesgo de ser bloqueado";
+                    return "Su comentario ha sido marcado como inapropiado.";
                 case 'NO_REPLACEMENT':
                     if (session.currentState === 'NEW') {
                         return defaultMessage;
