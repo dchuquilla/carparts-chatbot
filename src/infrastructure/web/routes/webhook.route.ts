@@ -38,6 +38,8 @@ router.post('/webhook/whatsapp/messages', messageRateLimiter, async (req, res) =
     }
     const fromNumber: boolean | string = req.body.messages[0]?.from;
 
+    logger.info("Received WhatsApp message from:", fromNumber);
+
     if (req.body?.messages[0]?.from_me) {
       return res.status(200).send('OK');
     }
@@ -50,7 +52,7 @@ router.post('/webhook/whatsapp/messages', messageRateLimiter, async (req, res) =
 
     // Filtered numbers
     // TODO: Move to config as an array
-    if (fromNumber && fromNumber === '593967784400') {
+    if (fromNumber && fromNumber === "593967784400") {
       return res.status(200).send('OK');
     }
 
