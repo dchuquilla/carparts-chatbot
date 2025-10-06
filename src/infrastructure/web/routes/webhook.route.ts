@@ -46,6 +46,13 @@ router.post('/webhook/whatsapp/messages', messageRateLimiter, async (req, res) =
     if (req.body?.messages[0]?.chat_id.endsWith('@g.us')) {
       return res.status(200).send('OK');
     }
+
+    // Filtered numbers
+    // TODO: Move to config as an array
+    if(req.body?.messages[0]?.from && req.body.messages[0].from === '593967784400') {
+      return res.status(200).send('OK');
+    }
+
     // fetch number from stores list and skip if found
     await axios.get(`${config.backend.url}/api/v1/stores/whatsapp-number/${req.body.messages[0].from}`)
     .then(response => {
