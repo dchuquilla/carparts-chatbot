@@ -36,6 +36,7 @@ router.post('/webhook/whatsapp/messages', messageRateLimiter, async (req, res) =
     if (!req.body || !req.body.messages) {
       return res.status(400).send('Invalid request body');
     }
+    const fromNumber: boolean | string = req.body.messages[0]?.from;
 
     if (req.body?.messages[0]?.from_me) {
       return res.status(200).send('OK');
@@ -49,24 +50,24 @@ router.post('/webhook/whatsapp/messages', messageRateLimiter, async (req, res) =
 
     // Filtered numbers
     // TODO: Move to config as an array
-    if(req.body?.messages[0]?.from && req.body.messages[0].from === '593967784400') {
+    if (fromNumber && fromNumber === '593967784400') {
       return res.status(200).send('OK');
     }
 
     // fetch number from stores list and skip if found
-    await axios.get(`${config.backend.url}/api/v1/stores/whatsapp-number/${req.body.messages[0].from}`)
+    await axios.get(`${config.backend.url}/api/v1/stores/whatsapp-number/${fromNumber}`)
     .then(response => {
       if (response.status === 200) {
-        logger.info(`Message from store number ${req.body.messages[0].from}, skipping.`);
+        logger.info(`Message from store number ${fromNumber}, skipping.`);
         return res.status(200).send('OK');
       }
     })
     .catch(error => {
-      logger.error(`Error fetching store number ${req.body.messages[0].from}: ${error.message}`);
+      logger.error(`Error fetching store number ${fromNumber}: ${error.message}`);
     });
 
-    // if (!["593992513609"].includes(req.body.messages[0].from)) {
-    //   logger.warn(`Received message from unauthorized user: ${req.body.messages[0].from}`);
+    // if (!["593992513609"].includes(fromNumber)) {
+    //   logger.warn(`Received message from unauthorized user: ${fromNumber}`);
     //   return res.status(200).send('OK');
     // }
 
